@@ -15,7 +15,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 class MagClassDataset(Dataset):
 
     def __init__(self, hdf5_file, 
-                 augment=True, crop_ranges=[[-1,2],[-3,5],[-10,20]], crop_jitter=[0.25,0.5,2], max_white_noise=0.05,binary_label=True):
+                 augment=True, crop_ranges=[[-1,2],[-3,5],[-10,20]], crop_jitter=[0.25,0.5,2], max_white_noise=0.05,binary_label=True,ViT_im_size = False):
         """
         Arguments:
             csv_file (string): Path to the HDF5 file.
@@ -38,6 +38,7 @@ class MagClassDataset(Dataset):
         self.crop_jitter = crop_jitter
         self.max_white_noise = max_white_noise
         self.augment = augment
+        self.ViT_im_size = ViT_im_size
            
         
         
@@ -102,7 +103,10 @@ class MagClassDataset(Dataset):
         image = torch.from_numpy(image)
         
         
-        crop_size = int(round(np.sqrt(image.shape[1]**2/2)))
+        if self.ViT_im_size:
+            crop_size = self.ViT_im_size
+        else:
+            crop_size = int(round(np.sqrt(image.shape[1]**2/2)))
         
         rand = np.random.uniform(low=0,high=self.max_white_noise)
         

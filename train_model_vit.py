@@ -5,7 +5,7 @@ from torch.optim import lr_scheduler
 import torch.backends.cudnn as cudnn
 import numpy as np
 import torchvision
-from torchvision import datasets, models, transforms
+from vit_pytorch import ViT
 import matplotlib.pyplot as plt
 import time
 from datetime import datetime
@@ -18,27 +18,28 @@ from dataLoader import MagClassDataset, get_weighted_data_loader
 from train import train_model
 
 current_time = datetime.now()
-architecture = 'mobilenet_v3_large'
-epoch_size_train = 40*124*2#7680
-epoch_size_val = 40*32*4#1280
-batch_size = 40#32
-num_workers = 40#40
-description = 'resplit_like_autoencoder'
-trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
-initial_weights = r'/mnt/field/test/ml/cg/Classification Models/resplit_like_autoencoder - final-fc - 2025-05-06 134724'#'default'#
-lr = 0.02#0.1
+architecture = 'ViT'
+epoch_size_train = 64*128*1#7680
+epoch_size_val = 64*32*1#1280
+batch_size = 64#32
+num_workers = 32#40
+description = 'ViT AE-Split some-DINO-pretraining-extraFCL'
+trainging_mode = 'final-fc'#'all'#'final-fc'
+initial_weights = r'/mnt/field/test/ml/cg/DINO Models/Run 3 DINOViT - mid 5e-4 lr - full epoch - 2025-05-06 141728 - epoch31'#'default'#
+lr = 1e-1#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.5 # 0.6
-num_epochs = 60
+num_epochs = 5
+image_size = 416
 
 
 model_path = r'/mnt/field/test/ml/cg/Classification Models'
 
-train_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/train.hdf5')
+train_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/train.hdf5',ViT_im_size=True)
 train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size,num_workers=num_workers)
 
-val_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/valid.hdf5',augment=False)
+val_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/valid.hdf5',augment=False,ViT_im_size=True)
 val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size,num_workers=num_workers)
 
 dataloaders = {}
@@ -52,6 +53,7 @@ log['architecture'] = architecture
 log['hdf5_file'] = train_dataset.hdf5_file
 log['trainging_mode'] = trainging_mode
 log['initial_weights'] = initial_weights
+log['image_size'] = image_size
 log['crop_ranges'] = train_dataset.crop_ranges
 log['crop_jitter'] = train_dataset.crop_jitter
 log['max_white_noise'] = train_dataset.max_white_noise
@@ -71,41 +73,44 @@ device = torch.accelerator.current_accelerator().type if torch.accelerator.is_av
 print(f"Using {device} device")
 
 
-mobilenetv3 = torchvision.models.mobilenet_v3_large(weights='DEFAULT')
+model = ViT(
+    image_size = image_size,
+    patch_size = 32,
+    num_classes = 1000,
+    dim = 1024,
+    depth = 6,
+    heads = 8,
+    mlp_dim = 2048
+)
     
-num_ftrs = mobilenetv3.classifier[3].in_features
 
 
-mobilenetv3.classifier[3] = nn.Sequential(nn.Linear(num_ftrs, 1),
-                                          nn.Sigmoid())
 
 if initial_weights != 'default':
-    mobilenetv3.load_state_dict(torch.load(os.path.join(initial_weights,'best_model_params.pt'), weights_only=True))
-    mobilenetv3.eval()
+    model.load_state_dict(torch.load(os.path.join(initial_weights,'ViT-Params.pt'), weights_only=True,map_location=torch.device(device)))
+    model.eval()
 
-mobilenetv3 = mobilenetv3.to(device)
+model = nn.Sequential(model,
+                      nn.Linear(1000, 1),
+                      nn.Sigmoid())
+
+model = model.to(device)
 
 criterion = nn.BCEWithLogitsLoss()
 
 # Choose parameters to optimise
 
-if trainging_mode=='head':
-    print('head')
-    optimizer_ft = optim.SGD(mobilenetv3.classifier.parameters(), lr=lr, momentum=momentum)
-elif trainging_mode=='final-fc':
+if trainging_mode=='final-fc':
     print('final-fc')
-    optimizer_ft = optim.SGD(mobilenetv3.classifier[3].parameters(), lr=lr, momentum=momentum)
+    optimizer_ft = optim.SGD(model[1].parameters(), lr=lr, momentum=momentum)
 elif trainging_mode=='all':
     print('all')
-    optimizer_ft = optim.SGD(mobilenetv3.parameters(), lr=lr, momentum=momentum)
-elif trainging_mode=='first-conv':
-    print('first-conv')
-    optimizer_ft = optim.SGD(mobilenetv3.features[0].parameters(), lr=lr, momentum=momentum)   
+    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum)
     
 # Decay LR by a factor of gamma every step_size epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
 
-mobilenetv3, log = train_model(mobilenetv3, criterion, optimizer_ft, exp_lr_scheduler,
+model, log = train_model(model, criterion, optimizer_ft, exp_lr_scheduler,
                           device, dataloaders, log, num_epochs=num_epochs)
 
 for k in log.keys():

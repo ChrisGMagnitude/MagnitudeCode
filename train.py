@@ -49,7 +49,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                 # Iterate over data.
                 for inputs, labels in tqdm.tqdm(dataloaders[phase]):
                     #for inputs, labels in dataloaders[phase]:
-                    
+
                     labels = torch.unsqueeze(labels, 1).type(torch.float)
                     inputs = inputs.to(device)
                     labels = labels.to(device)
