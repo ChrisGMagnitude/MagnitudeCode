@@ -67,8 +67,7 @@ log['epoch_size_val'] = epoch_size_val
 log['batch_size'] = batch_size
 log['num_workers'] = num_workers
 log['head_hidden_layers'] = head_hidden_layers
-log['head_dropout1'] = head_dropout1
-log['head_dropout2'] = head_dropout2
+log['head_dropout1'] = head_dropout
 log['weight_decay'] = weight_decay
 log['lr'] = lr
 log['momentum'] = momentum
@@ -93,9 +92,9 @@ model.eval()
 #    model.eval()
 
 head = nn.Sequential(
-                      nn.Dropout(p=head_dropout1),
+                      nn.Dropout(p=head_dropout),
                       nn.Linear(1000, head_hidden_layers),
-                      nn.BatchNorm1d(hidden_layers),
+                      nn.BatchNorm1d(head_hidden_layers),
                       nn.relu(),
                       nn.Sigmoid(),
                       nn.Linear(head_hidden_layers, 1),
