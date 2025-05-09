@@ -91,14 +91,20 @@ model.eval()
 #    model.load_state_dict(torch.load(os.path.join(initial_weights,'ViT-Params.pt'), weights_only=True,map_location=torch.device(device)))
 #    model.eval()
 
-head = nn.Sequential(
-                      nn.Dropout(p=head_dropout),
-                      nn.Linear(1000, head_hidden_layers),
-                      nn.BatchNorm1d(head_hidden_layers),
-                      nn.ReLU(),
-                      nn.Sigmoid(),
-                      nn.Linear(head_hidden_layers, 1),
-                      nn.Sigmoid())
+class Head(nn.Module):
+    def __init__(self):
+        super(Network, self).__init__()
+        self.linear1 = nn.Linear(input_dim, head_hidden_layers)
+        self.bnorm = nn.BatchNorm1d(head_hidden_layers)
+        self.dropout = nn.Dropout(p=head_dropout)
+        self.linear2 = nn.Linear(head_hidden_layers, 1)
+    def forward(self, x):
+        x = self.dropout(x)
+        x = torch.relu(self.bnorm(self.linear1(x)))
+        x = torch.sigmoid(self.linear2(x))
+        return x
+    
+head = Head()
 
 model = torch.nn.Sequential(model,
                       head)
