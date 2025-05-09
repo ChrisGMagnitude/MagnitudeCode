@@ -95,7 +95,7 @@ head = nn.Sequential(
                       nn.Dropout(p=head_dropout),
                       nn.Linear(1000, head_hidden_layers),
                       nn.BatchNorm1d(head_hidden_layers),
-                      nn.relu(),
+                      nn.ReLU(),
                       nn.Sigmoid(),
                       nn.Linear(head_hidden_layers, 1),
                       nn.Sigmoid())
