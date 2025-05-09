@@ -20,7 +20,7 @@ from train import train_model
 
 current_time = datetime.now()
 architecture = 'ViT'
-epoch_size_train = 64*32*1#7680
+epoch_size_train = 64*32*4#7680
 epoch_size_val = 64*32*1#1280
 batch_size = 16#32
 num_workers = 16#40
@@ -32,9 +32,9 @@ head_dropout = 0.9
 weight_decay = 1e-1
 lr = 5e-3#0.1
 momentum = 0.9
-step_size = 10
-gamma = 0.5 # 0.6
-num_epochs = 15
+step_size = 20
+gamma = 0.1 # 0.6
+num_epochs = 40
 image_size = 392
 
 
