@@ -27,22 +27,22 @@ num_workers = 32#40
 description = 'ViT AE-Split B_16_imagenet1k_pretrained'
 trainging_mode = 'final-fc'#'all'#'final-fc'
 initial_weights = 'default'#r'/mnt/field/test/ml/cg/DINO Models/Run 3 DINOViT - mid 5e-4 lr - full epoch - 2025-05-06 141728 - epoch31'#'default'#
-lr = 1e-1#0.1
+lr = 1e-3#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.5 # 0.6
-num_epochs = 5
+num_epochs = 15
 image_size = 392
 
 
 
-model_path = r'/mnt/field/test/ml/cg/Classification Models'
+model_path = r'/root/field_data/test/ml/cg/Classification Models'
 
-train_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/train.hdf5',ViT_im_size=image_size)
-train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size,num_workers=num_workers)
+train_dataset = MagClassDataset(r'/root/field_data/test/ml/cg/Classification Datasets/resplit_like_autoencoder/train.hdf5',ViT_im_size=image_size)
+train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size)#,num_workers=num_workers)
 
-val_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/valid.hdf5',augment=False,ViT_im_size=image_size)
-val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size,num_workers=num_workers)
+val_dataset = MagClassDataset(r'/root/field_data/test/ml/cg/Classification Datasets/resplit_like_autoencoder/valid.hdf5',augment=False,ViT_im_size=image_size)
+val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size)#,num_workers=num_workers)
 
 dataloaders = {}
 dataloaders['train'] = train_loader
@@ -104,11 +104,11 @@ criterion = nn.BCEWithLogitsLoss()
 
 if trainging_mode=='final-fc':
     print('final-fc')
-    optimizer_ft = optim.SGD(model[1].parameters(), lr=lr, momentum=momentum)
+    optimizer_ft = optim.SGD(model[1].parameters(), lr=lr, momentum=momentum, weight_decay=1e-2)
     model[0].requires_grad = False
 elif trainging_mode=='all':
     print('all')
-    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum)
+    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=1e-2)
     
 # Decay LR by a factor of gamma every step_size epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
