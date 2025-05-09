@@ -113,11 +113,11 @@ criterion = nn.BCELoss()
 
 if trainging_mode=='final-fc':
     print('final-fc')
-    optimizer_ft = optim.SGD(model[1].parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
+    optimizer_ft = optim.SGD(model[1].parameters(), lr=lr, weight_decay=weight_decay)
     model[0].requires_grad = False
 elif trainging_mode=='all':
     print('all')
-    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
+    optimizer_ft = optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay)
     
 # Decay LR by a factor of gamma every step_size epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
