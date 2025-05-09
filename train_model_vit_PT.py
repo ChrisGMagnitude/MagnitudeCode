@@ -36,12 +36,12 @@ image_size = 392
 
 
 
-model_path = r'/root/field_data/test/ml/cg/Classification Models'
+model_path = r'/mnt/field/test/ml/cg/Classification Models'
 
-train_dataset = MagClassDataset(r'/root/field_data/test/ml/cg/Classification Datasets/resplit_like_autoencoder/train.hdf5',ViT_im_size=image_size)
+train_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/train.hdf5',ViT_im_size=image_size)
 train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size)#,num_workers=num_workers)
 
-val_dataset = MagClassDataset(r'/root/field_data/test/ml/cg/Classification Datasets/resplit_like_autoencoder/valid.hdf5',augment=False,ViT_im_size=image_size)
+val_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/valid.hdf5',augment=False,ViT_im_size=image_size)
 val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size)#,num_workers=num_workers)
 
 dataloaders = {}
