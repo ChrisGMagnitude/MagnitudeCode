@@ -93,7 +93,7 @@ model.eval()
 
 class Head(nn.Module):
     def __init__(self):
-        super(Network, self).__init__()
+        super(Head, self).__init__()
         self.linear1 = nn.Linear(input_dim, head_hidden_layers)
         self.bnorm = nn.BatchNorm1d(head_hidden_layers)
         self.dropout = nn.Dropout(p=head_dropout)
