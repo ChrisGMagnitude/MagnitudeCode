@@ -27,7 +27,7 @@ num_workers = 16#40
 description = 'ViT AE-Split B_16_imagenet1k_pretrained'
 trainging_mode = 'final-fc'#'all'#'final-fc'
 initial_weights = 'default'#r'/mnt/field/test/ml/cg/DINO Models/Run 3 DINOViT - mid 5e-4 lr - full epoch - 2025-05-06 141728 - epoch31'#'default'#
-lr = 1e-3#0.1
+lr = 5e-3#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.5 # 0.6
@@ -39,10 +39,10 @@ image_size = 392
 model_path = r'/mnt/field/test/ml/cg/Classification Models'
 
 train_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/train.hdf5',ViT_im_size=image_size)
-train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size)#,num_workers=num_workers)
+train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size,num_workers=num_workers)
 
 val_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/valid.hdf5',augment=False,ViT_im_size=image_size)
-val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size)#,num_workers=num_workers)
+val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size,num_workers=num_workers)
 
 dataloaders = {}
 dataloaders['train'] = train_loader
@@ -89,7 +89,8 @@ head = nn.Sequential(
                       nn.Dropout(p=0.75),
                       nn.Linear(1000, 5),
                       nn.Sigmoid(),
-                      nn.Linear(5, 1))
+                      nn.Linear(5, 1),
+                      nn.Sigmoid())
 
 model = torch.nn.Sequential(model,
                       head)
