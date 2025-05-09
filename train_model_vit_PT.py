@@ -24,9 +24,12 @@ epoch_size_train = 64*32*1#7680
 epoch_size_val = 64*32*1#1280
 batch_size = 16#32
 num_workers = 16#40
-description = 'ViT AE-Split B_16_imagenet1k_pretrained'
+description = 'ViT AE-Split dinov2_vitb14_lc_pretrained'
 trainging_mode = 'final-fc'#'all'#'final-fc'
 initial_weights = 'default'#r'/mnt/field/test/ml/cg/DINO Models/Run 3 DINOViT - mid 5e-4 lr - full epoch - 2025-05-06 141728 - epoch31'#'default'#
+head_hidden_layers = 5
+head_dropout = 0.9
+weight_decay = 1e-1
 lr = 5e-3#0.1
 momentum = 0.9
 step_size = 10
@@ -63,6 +66,10 @@ log['epoch_size_train'] = epoch_size_train
 log['epoch_size_val'] = epoch_size_val
 log['batch_size'] = batch_size
 log['num_workers'] = num_workers
+log['head_hidden_layers'] = head_hidden_layers
+log['head_dropout1'] = head_dropout1
+log['head_dropout2'] = head_dropout2
+log['weight_decay'] = weight_decay
 log['lr'] = lr
 log['momentum'] = momentum
 log['step_size'] = step_size
@@ -75,8 +82,8 @@ device = torch.accelerator.current_accelerator().type if torch.accelerator.is_av
 print(f"Using {device} device")
 
 
-model = ViT('B_16_imagenet1k', pretrained=True)
-#model = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14_lc')
+#model = ViT('B_16_imagenet1k', pretrained=True)
+model = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14_lc')
 
 model.eval()
 
@@ -86,10 +93,12 @@ model.eval()
 #    model.eval()
 
 head = nn.Sequential(
-                      nn.Dropout(p=0.75),
-                      nn.Linear(1000, 5),
+                      nn.Dropout(p=head_dropout1),
+                      nn.Linear(1000, head_hidden_layers),
+                      nn.BatchNorm1d(hidden_layers),
+                      nn.relu(),
                       nn.Sigmoid(),
-                      nn.Linear(5, 1),
+                      nn.Linear(head_hidden_layers, 1),
                       nn.Sigmoid())
 
 model = torch.nn.Sequential(model,
@@ -99,17 +108,17 @@ model = torch.nn.Sequential(model,
 
 model = model.to(device)
 
-criterion = nn.BCEWithLogitsLoss()
+criterion = nn.BCELoss()
 
 # Choose parameters to optimise
 
 if trainging_mode=='final-fc':
     print('final-fc')
-    optimizer_ft = optim.SGD(model[1].parameters(), lr=lr, momentum=momentum, weight_decay=1e-2)
+    optimizer_ft = optim.SGD(model[1].parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
     model[0].requires_grad = False
 elif trainging_mode=='all':
     print('all')
-    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=1e-2)
+    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
     
 # Decay LR by a factor of gamma every step_size epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
