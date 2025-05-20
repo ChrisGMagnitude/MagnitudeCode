@@ -93,13 +93,13 @@ if initial_weights != 'default':
     pretrained_weights = torch.load(os.path.join(initial_weights), weights_only=False,map_location=torch.device(device))['teacher']
 
 
-    #for key in list(pretrained_weights.keys()):
-    #    if 'dino_head' in key:
-    #        pretrained_weights.pop(key)
-    #    else:
-    #        pretrained_weights[key.replace('backbone.', '')] = pretrained_weights.pop(key)
+    for key in list(pretrained_weights.keys()):
+        if 'dino_head' in key:
+            pretrained_weights.pop(key)
+        else:
+            pretrained_weights[key.replace('backbone.', '')] = pretrained_weights.pop(key)
 
-    backbone.load_state_dict(pretrained_weights.backbone)
+    backbone.load_state_dict(pretrained_weights)
     backbone.eval()
 
 class DinoClassifier(nn.Module):
