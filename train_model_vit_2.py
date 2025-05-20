@@ -117,7 +117,7 @@ class DinoClassifier(nn.Module):
         x = self.backbone.get_intermediate_layers(x, n=1)[0][:, 0]  # CLS token
         return self.head(x)
     
-model = DinoClassifier(backbone, num_classes)
+model = DinoClassifier(backbone, 1)
 
 for name, param in model.backbone.named_parameters():
     param.requires_grad = False
