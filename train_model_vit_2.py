@@ -25,7 +25,7 @@ epoch_size_train = 64*32*4#7680
 epoch_size_val = 64*32*1#1280
 batch_size = 16#32
 num_workers = 8#40
-description = 'ViT-MagAutoencoder-pretrained'
+description = 'ViT-MagAutoencoder-pretrained-2'
 trainging_mode = 'final-fc'#'all'#'final-fc'
 #initial_weights = r'/mnt/magbucket/dinov2-output-pretrained/model_final.rank_0.pth'#'default'#
 initial_weights = r'/mnt/magbucket/dinov2-output-pretrained/eval/training_123999/teacher_checkpoint.pth'
@@ -84,47 +84,43 @@ os.mkdir(os.path.join(log['model_path'],log['name']))
 device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 print(f"Using {device} device")
 
+backbone = vit_base(pretrained=True) 
 
-#model = ViT('B_16_imagenet1k', pretrained=True)
-#model = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14')
-
-model = vit_base(pretrained=True) 
-
-model.eval()
+backbone.eval()
 
 
 if initial_weights != 'default':
     pretrained_weights = torch.load(os.path.join(initial_weights), weights_only=False,map_location=torch.device(device))['teacher']
 
 
-    for key in list(pretrained_weights.keys()):
-        if 'dino_head' in key:
-            pretrained_weights.pop(key)
-        else:
-            pretrained_weights[key.replace('backbone.', '')] = pretrained_weights.pop(key)
+    #for key in list(pretrained_weights.keys()):
+    #    if 'dino_head' in key:
+    #        pretrained_weights.pop(key)
+    #    else:
+    #        pretrained_weights[key.replace('backbone.', '')] = pretrained_weights.pop(key)
 
-    model.load_state_dict(pretrained_weights)
-    model.eval()
+    backbone.load_state_dict(pretrained_weights)
+    backbone.eval()
 
-class Head(nn.Module):
-    def __init__(self):
-        super(Head, self).__init__()
-        self.linear1 = nn.Linear(12288, head_hidden_layers)
-        self.bnorm = nn.BatchNorm1d(head_hidden_layers)
-        self.dropout = nn.Dropout(p=head_dropout)
-        self.linear2 = nn.Linear(head_hidden_layers, 1)
+class DinoClassifier(nn.Module):
+    def __init__(self, backbone, num_classes):
+        super().__init__()
+        self.backbone = backbone
+        self.head = nn.Sequential(
+            nn.Linear(backbone.embed_dim, 512),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(512, num_classes)
+        )
+
     def forward(self, x):
-        x = self.dropout(torch.flatten(x))
-        x = torch.relu(self.bnorm(self.linear1(x)))
-        x = torch.sigmoid(self.linear2(x))
-        return x
+        x = self.backbone.get_intermediate_layers(x, n=1)[0][:, 0]  # CLS token
+        return self.head(x)
     
-head = Head()
+model = DinoClassifier(backbone, num_classes)
 
-model = torch.nn.Sequential(model,
-                      head)
-
-
+for name, param in model.backbone.named_parameters():
+    param.requires_grad = False
 
 model = model.to(device)
 
