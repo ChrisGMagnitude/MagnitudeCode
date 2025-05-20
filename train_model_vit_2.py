@@ -115,7 +115,7 @@ class DinoClassifier(nn.Module):
 
     def forward(self, x):
         x = self.backbone.get_intermediate_layers(x, n=1)[0][:, 0]  # CLS token
-        return self.head(x)
+        return torch.sigmoid(self.head(x))
     
 model = DinoClassifier(backbone, 1)
 
