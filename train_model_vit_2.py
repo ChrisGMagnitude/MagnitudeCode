@@ -99,7 +99,7 @@ if initial_weights != 'default':
     #    else:
     #        pretrained_weights[key.replace('backbone.', '')] = pretrained_weights.pop(key)
 
-    backbone.load_state_dict(pretrained_weights)
+    backbone.load_state_dict(pretrained_weights.backbone)
     backbone.eval()
 
 class DinoClassifier(nn.Module):
