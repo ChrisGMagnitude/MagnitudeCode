@@ -109,13 +109,13 @@ class MagClassDataset(Dataset):
             crop_size = int(round(np.sqrt(image.shape[1]**2/2)))
         
         rand = np.random.uniform(low=0,high=self.max_white_noise)
-        
+        image = image + (rand**0.5)*torch.randn(image.shape)
+
         if self.augment:
             transformer = transforms.Compose([
                                             transforms.v2.CenterCrop((crop_size,crop_size)),
                                             transforms.v2.RandomRotation(degrees=(0, 360)),
-                                            transforms.v2.RandomHorizontalFlip(),
-                                            transforms.v2.GaussianNoise(sigma=rand)
+                                            transforms.v2.RandomHorizontalFlip()
                                             ])
         else:
             transformer = transforms.Compose([
