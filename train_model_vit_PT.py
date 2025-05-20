@@ -106,12 +106,12 @@ if initial_weights != 'default':
 class Head(nn.Module):
     def __init__(self):
         super(Head, self).__init__()
-        self.linear1 = nn.Linear(768, head_hidden_layers)
+        self.linear1 = nn.Linear(3840, head_hidden_layers)
         self.bnorm = nn.BatchNorm1d(head_hidden_layers)
         self.dropout = nn.Dropout(p=head_dropout)
         self.linear2 = nn.Linear(head_hidden_layers, 1)
     def forward(self, x):
-        x = self.dropout(x)
+        x = self.dropout(torch.flatten(x))
         x = torch.relu(self.bnorm(self.linear1(x)))
         x = torch.sigmoid(self.linear2(x))
         return x
