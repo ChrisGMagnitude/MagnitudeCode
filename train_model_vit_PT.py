@@ -23,7 +23,7 @@ architecture = 'ViT'
 epoch_size_train = 64*32*4#7680
 epoch_size_val = 64*32*1#1280
 batch_size = 16#32
-num_workers = 16#40
+#num_workers = 16#40
 description = 'ViT-MagAutoencoder-pretrained'
 trainging_mode = 'final-fc'#'all'#'final-fc'
 #initial_weights = r'/mnt/magbucket/dinov2-output-pretrained/model_final.rank_0.pth'#'default'#
@@ -45,10 +45,10 @@ if not os.path.exists(model_path):
     os.mkdir(model_path)
 
 train_dataset = MagClassDataset(r'/mnt/magbucket/resplit_like_autoencoder/train.hdf5',ViT_im_size=image_size)
-train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size,num_workers=num_workers)
+train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size)
 
 val_dataset = MagClassDataset(r'/mnt/magbucket/resplit_like_autoencoder/valid.hdf5',augment=False,ViT_im_size=image_size)
-val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size,num_workers=num_workers)
+val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size)
 
 dataloaders = {}
 dataloaders['train'] = train_loader
@@ -68,7 +68,7 @@ log['max_white_noise'] = train_dataset.max_white_noise
 log['epoch_size_train'] = epoch_size_train
 log['epoch_size_val'] = epoch_size_val
 log['batch_size'] = batch_size
-log['num_workers'] = num_workers
+#log['num_workers'] = num_workers
 log['head_hidden_layers'] = head_hidden_layers
 log['head_dropout1'] = head_dropout
 log['weight_decay'] = weight_decay
