@@ -90,7 +90,7 @@ backbone.eval()
 
 
 if initial_weights != 'default':
-    pretrained_weights = torch.load(os.path.join(initial_weights), weights_only=False,map_location=torch.device(device))
+    pretrained_weights = torch.load(os.path.join(initial_weights), weights_only=False,map_location=torch.device(device))['teacher']
 
 
     for key in list(pretrained_weights.keys()):
