@@ -24,10 +24,10 @@ epoch_size_train = 64*32*4#7680
 epoch_size_val = 64*32*1#1280
 batch_size = 16#32
 num_workers = 8#40
-description = 'ViT-MagAutoencoder-fbpretrained'
+description = 'ViT-MagAutoencoder-pretrained'
 trainging_mode = 'final-fc'#'all'#'final-fc'
 #initial_weights = r'/mnt/magbucket/dinov2-output-pretrained/model_final.rank_0.pth'#'default'#
-initial_weights = 'default'#r'/mnt/magbucket/dinov2-output-pretrained/eval/training_123999/teacher_checkpoint.pth'
+initial_weights = r'/mnt/magbucket/dinov2-output-pretrained/eval/training_123999/teacher_checkpoint.pth'
 head_hidden_layers = 5
 head_dropout = 0.8
 weight_decay = 1e-1
@@ -35,7 +35,7 @@ lr = 5e-3#0.1
 momentum = 0.9
 step_size = 20
 gamma = 0.1 # 0.6
-num_epochs = 40
+num_epochs = 20
 image_size = 392
 
 
