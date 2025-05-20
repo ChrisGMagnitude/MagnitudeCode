@@ -84,7 +84,7 @@ os.mkdir(os.path.join(log['model_path'],log['name']))
 device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 print(f"Using {device} device")
 
-backbone = vit_base() 
+backbone = vit_base(patch_size=14) 
 
 backbone.eval()
 
