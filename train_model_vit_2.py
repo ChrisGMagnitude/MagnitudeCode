@@ -107,10 +107,11 @@ class DinoClassifier(nn.Module):
         super().__init__()
         self.backbone = backbone
         self.head = nn.Sequential(
-            nn.Linear(backbone.embed_dim, 512),
+            nn.Dropout(0.8),
+            nn.Linear(backbone.embed_dim, 5),
             nn.ReLU(),
-            nn.Dropout(0.3),
-            nn.Linear(512, num_classes)
+            #nn.Dropout(0.3),
+            nn.Linear(5, num_classes)
         )
 
     def forward(self, x):
