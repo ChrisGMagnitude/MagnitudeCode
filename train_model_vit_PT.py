@@ -24,9 +24,9 @@ epoch_size_train = 64*32*4#7680
 epoch_size_val = 64*32*1#1280
 batch_size = 16#32
 num_workers = 16#40
-description = 'ViT AE-Split dinov2_vitb14_lc_pretrained'
+description = 'ViT-MagAutoencoder-pretrained'
 trainging_mode = 'final-fc'#'all'#'final-fc'
-initial_weights = 'default'#r'/mnt/field/test/ml/cg/DINO Models/Run 3 DINOViT - mid 5e-4 lr - full epoch - 2025-05-06 141728 - epoch31'#'default'#
+initial_weights = r'/mnt/magbucket/dinov2-output-pretrained/eval/training_123999.pth'#'default'#
 head_hidden_layers = 5
 head_dropout = 0.8
 weight_decay = 1e-1
@@ -39,12 +39,14 @@ image_size = 392
 
 
 
-model_path = r'/mnt/field/test/ml/cg/Classification Models'
+model_path = r'/mnt/magbucket/autoencoder_classification_test'
+if not os.path.exists(model_path):
+    os.mkdir(model_path)
 
-train_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/train.hdf5',ViT_im_size=image_size)
+train_dataset = MagClassDataset(r'/mnt/magbucket/resplit_like_autoencoder/train.hdf5',ViT_im_size=image_size)
 train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size,num_workers=num_workers)
 
-val_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/valid.hdf5',augment=False,ViT_im_size=image_size)
+val_dataset = MagClassDataset(r'/mnt/magbucket/resplit_like_autoencoder/valid.hdf5',augment=False,ViT_im_size=image_size)
 val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size,num_workers=num_workers)
 
 dataloaders = {}
@@ -82,14 +84,14 @@ print(f"Using {device} device")
 
 
 #model = ViT('B_16_imagenet1k', pretrained=True)
-model = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14_lc')
+model = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14')
 
 model.eval()
 
 
-#if initial_weights != 'default':
-#    model.load_state_dict(torch.load(os.path.join(initial_weights,'ViT-Params.pt'), weights_only=True,map_location=torch.device(device)))
-#    model.eval()
+if initial_weights != 'default':
+    model.load_state_dict(torch.load(os.path.join(initial_weights), weights_only=True,map_location=torch.device(device)))
+    model.eval()
 
 class Head(nn.Module):
     def __init__(self):
