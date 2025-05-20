@@ -91,7 +91,12 @@ model.eval()
 
 
 if initial_weights != 'default':
-    model.load_state_dict(torch.load(os.path.join(initial_weights), weights_only=False,map_location=torch.device(device))['teacher'])
+    pretrained_weights = torch.load(os.path.join(initial_weights), weights_only=False,map_location=torch.device(device))['teacher']
+
+    for key in list(pretrained_weights.keys()):
+        pretrained_weights[key.replace('backbone.', '')] = pretrained_weights.pop(key)
+
+    model.load_state_dict(pretrained_weights)
     model.eval()
 
 class Head(nn.Module):
