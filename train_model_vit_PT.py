@@ -85,7 +85,7 @@ print(f"Using {device} device")
 
 
 #model = ViT('B_16_imagenet1k', pretrained=True)
-model = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14_lc')
+model = torch.hub.load('facebookresearch/dinov2', 'dinov2_vitb14')
 
 model.eval()
 
