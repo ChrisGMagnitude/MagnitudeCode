@@ -106,7 +106,7 @@ if initial_weights != 'default':
 class Head(nn.Module):
     def __init__(self):
         super(Head, self).__init__()
-        self.linear1 = nn.Linear(3840, head_hidden_layers)
+        self.linear1 = nn.Linear(12288, head_hidden_layers)
         self.bnorm = nn.BatchNorm1d(head_hidden_layers)
         self.dropout = nn.Dropout(p=head_dropout)
         self.linear2 = nn.Linear(head_hidden_layers, 1)
