@@ -122,7 +122,7 @@ model = DinoClassifier(backbone, 1)
 for name, param in model.backbone.named_parameters():
     param.requires_grad = False
 
-model = model.to(device)
+
 
 criterion = nn.BCELoss()
 
@@ -135,7 +135,9 @@ if trainging_mode=='final-fc':
 elif trainging_mode=='all':
     print('all')
     optimizer_ft = optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay)
-    
+
+model = model.to(device)
+
 # Decay LR by a factor of gamma every step_size epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
 
