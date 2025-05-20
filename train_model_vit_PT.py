@@ -6,7 +6,7 @@ import torch.backends.cudnn as cudnn
 import numpy as np
 import torchvision
 #from vit_pytorch import ViT
-from pytorch_pretrained_vit import ViT
+#from pytorch_pretrained_vit import ViT
 import matplotlib.pyplot as plt
 import time
 from datetime import datetime
