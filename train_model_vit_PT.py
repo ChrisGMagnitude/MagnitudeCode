@@ -91,7 +91,7 @@ model.eval()
 
 
 if initial_weights != 'default':
-    model.load_state_dict(torch.load(os.path.join(initial_weights), weights_only=False,map_location=torch.device(device)))
+    model.load_state_dict(torch.load(os.path.join(initial_weights), weights_only=False,map_location=torch.device(device))['teacher'])
     model.eval()
 
 class Head(nn.Module):
