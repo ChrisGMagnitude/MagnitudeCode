@@ -131,7 +131,7 @@ criterion = nn.BCELoss()
 if trainging_mode=='final-fc':
     print('final-fc')
     optimizer_ft = optim.SGD(model.head.parameters(), lr=lr, weight_decay=weight_decay)
-    model[0].requires_grad = False
+    model.backbone.requires_grad = False
 elif trainging_mode=='all':
     print('all')
     optimizer_ft = optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay)
