@@ -25,6 +25,8 @@ class MagClassDataset(Dataset):
         self.hdf5_file = hdf5_file
         self.fh = h5py.File(self.hdf5_file, "r")
         
+        self.label_type = label
+
         if label=='binary':
             label = self.fh["labels"]
             label = [l.decode() for l in label]
@@ -33,7 +35,7 @@ class MagClassDataset(Dataset):
             self.labels = binary_label.astype(float)
         elif label=='classification':
             self.labels = self.fh["labels"]
-        elif label=='segmentation':
+        elif label=='arch-segmentation':
             label = self.fh["archMask"]
             
 
@@ -59,13 +61,14 @@ class MagClassDataset(Dataset):
         image = self.fh["images"][idx]
         image[np.isnan(image)] = 0
         image = self.clip_and_normalise_data(image)
-        image = self.apply_transforms(image)
+    
+        if 'segmentation' in self.label_type:
+            image, label = self.apply_transforms(image)
+        else:
+            image = self.apply_transforms(image)
+            label = self.labels[idx]
         
-        
-        
-        project = self.fh["project"][idx]
-
-        sample = [image, self.labels[idx]]
+        sample = [image, label]
         
 
         return sample
@@ -128,8 +131,13 @@ class MagClassDataset(Dataset):
             
             
         image = transformer(image)
-        
-        return image.type(torch.float)
+
+        if 'segmentation' in self.label_type:
+            label = transformer(self.labels[idx]) 
+
+            return(image.type(torch.float),label)
+        else:
+            return image.type(torch.float)
         
         
 def make_weights_for_balanced_classes(classes, nclasses):  

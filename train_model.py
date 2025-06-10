@@ -35,10 +35,10 @@ num_epochs = 60
 
 model_path = r'/mnt/field/test/ml/cg/Classification Models'
 
-train_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/train.hdf5')
+train_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/train.hdf5',label='arch-segmentation')
 train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size,num_workers=num_workers)
 
-val_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/valid.hdf5',augment=False)
+val_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/valid.hdf5',augment=False,label='arch-segmentation')
 val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size,num_workers=num_workers)
 
 dataloaders = {}
