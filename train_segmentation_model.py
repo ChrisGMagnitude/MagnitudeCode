@@ -18,14 +18,14 @@ from dataLoader import MagClassDataset, get_weighted_data_loader
 from train import train_model
 
 current_time = datetime.now()
-architecture = 'mobilenet_v3_large'
+architecture = 'deeplabv3_resnet50'
 label_type = 'arch-segmentation'
 epoch_size_train = 40*124*2#7680
 epoch_size_val = 40*32*4#1280
 batch_size = 40#32
 num_workers = 40#40
-description = 'resplit_like_autoencoder'
-trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
+description = 'Attempt-1'
+trainging_mode = 'final-fc'#'all'#'head'#'final-fc'#'first-conv'
 initial_weights = 'default'#r'/mnt/field/test/ml/cg/Classification Models/resplit_like_autoencoder - final-fc - 2025-05-06 134724'#'default'#
 lr = 0.02#0.1
 momentum = 0.9
@@ -36,11 +36,11 @@ num_epochs = 60
 
 model_path = r'/mnt/field/test/ml/cg/Classification Models'
 
-train_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/train.hdf5',label_type=label_type)
-train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size,num_workers=num_workers)
+train_dataset = MagClassDataset(r'/mnt/docker/Autoencoder/segmentation-hdf5/train.hdf5',label_type=label_type)
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers)  
 
-val_dataset = MagClassDataset(r'/mnt/field/test/ml/cg/Classification Datasets/resplit_like_autoencoder/valid.hdf5',augment=False,label_type=label_type)
-val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size,num_workers=num_workers)
+val_dataset = MagClassDataset(r'/mnt/docker/Autoencoder/segmentation-hdf5/valid.hdf5',augment=False,label_type=label_type)
+val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers)
 
 dataloaders = {}
 dataloaders['train'] = train_loader
@@ -74,19 +74,18 @@ print(f"Using {device} device")
 
 
 
-mobilenetv3 = torchvision.models.mobilenet_v3_large(weights='DEFAULT')
-    
-num_ftrs = mobilenetv3.classifier[3].in_features
+model = models.deeplabv3_resnet50(pretrained=True)
 
+# Adjust the classifier head for your number of classes, e.g., binary or multi-class segmentation
+num_classes = 4
+model.classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
-mobilenetv3.classifier[3] = nn.Sequential(nn.Linear(num_ftrs, 1),
-                                          nn.Sigmoid())
 
 if initial_weights != 'default':
-    mobilenetv3.load_state_dict(torch.load(os.path.join(initial_weights,'best_model_params.pt'), weights_only=True))
-    mobilenetv3.eval()
+    model.load_state_dict(torch.load(os.path.join(initial_weights,'best_model_params.pt'), weights_only=True))
+    model.eval()
 
-mobilenetv3 = mobilenetv3.to(device)
+model = model.to(device)
 
 criterion = nn.BCEWithLogitsLoss()
 
@@ -94,21 +93,21 @@ criterion = nn.BCEWithLogitsLoss()
 
 if trainging_mode=='head':
     print('head')
-    optimizer_ft = optim.SGD(mobilenetv3.classifier.parameters(), lr=lr, momentum=momentum)
+    optimizer_ft = optim.SGD(model.classifier.parameters(), lr=lr, momentum=momentum)
 elif trainging_mode=='final-fc':
     print('final-fc')
-    optimizer_ft = optim.SGD(mobilenetv3.classifier[3].parameters(), lr=lr, momentum=momentum)
+    optimizer_ft = optim.SGD(model.classifier[4].parameters(), lr=lr, momentum=momentum)
 elif trainging_mode=='all':
     print('all')
-    optimizer_ft = optim.SGD(mobilenetv3.parameters(), lr=lr, momentum=momentum)
+    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum)
 elif trainging_mode=='first-conv':
     print('first-conv')
-    optimizer_ft = optim.SGD(mobilenetv3.features[0].parameters(), lr=lr, momentum=momentum)   
+    optimizer_ft = optim.SGD(model.features[0].parameters(), lr=lr, momentum=momentum)   
     
 # Decay LR by a factor of gamma every step_size epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
 
-mobilenetv3, log = train_model(mobilenetv3, criterion, optimizer_ft, exp_lr_scheduler,
+model, log = train_model(model, criterion, optimizer_ft, exp_lr_scheduler,
                           device, dataloaders, log, num_epochs=num_epochs)
 
 for k in log.keys():
