@@ -20,6 +20,7 @@ from train import train_model
 current_time = datetime.now()
 architecture = 'deeplabv3_resnet50'
 label_type = 'arch-segmentation'
+num_classes = 1
 epoch_size_train = 40*124*2#7680
 epoch_size_val = 40*32*4#1280
 batch_size = 40#32
@@ -51,6 +52,7 @@ log['model_path'] = model_path
 log['name'] = ' - '.join([description, trainging_mode,str(current_time)[:-7].replace(':','')])
 log['architecture'] = architecture
 log['label_type'] = label_type
+log['num_classes'] = num_classes
 log['hdf5_file'] = train_dataset.hdf5_file
 log['trainging_mode'] = trainging_mode
 log['initial_weights'] = initial_weights
