@@ -15,7 +15,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 class MagClassDataset(Dataset):
 
     def __init__(self, hdf5_file, 
-                 augment=True, crop_ranges=[[-1,2],[-3,5],[-10,20]], crop_jitter=[0.25,0.5,2], max_white_noise=0.05,binary_label=True,ViT_im_size = False):
+                 augment=True, crop_ranges=[[-1,2],[-3,5],[-10,20]], crop_jitter=[0.25,0.5,2], max_white_noise=0.05,label='binary',ViT_im_size = False):
         """
         Arguments:
             csv_file (string): Path to the HDF5 file.
@@ -25,14 +25,18 @@ class MagClassDataset(Dataset):
         self.hdf5_file = hdf5_file
         self.fh = h5py.File(self.hdf5_file, "r")
         
-        if binary_label:
+        if label=='binary':
             label = self.fh["labels"]
             label = [l.decode() for l in label]
             binary_label = np.zeros(len(label))
             binary_label[np.array(label)=='archae']=1
             self.labels = binary_label.astype(float)
-        else:
+        elif label=='classification':
             self.labels = self.fh["labels"]
+        elif label=='segmentation':
+            label = self.fh["archMask"]
+            
+
         self.classes = np.unique(self.labels)
         self.crop_ranges = crop_ranges
         self.crop_jitter = crop_jitter
