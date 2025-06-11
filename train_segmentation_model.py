@@ -92,6 +92,15 @@ model = model.to(device)
 
 criterion = nn.BCEWithLogitsLoss()
 
+class DiceLoss(nn.Module):
+    def forward(self, inputs, targets, smooth=1):
+        inputs = torch.sigmoid(inputs)
+        intersection = (inputs * targets).sum()
+        dice = (2.*intersection + smooth) / (inputs.sum() + targets.sum() + smooth)
+        return 1 - dice
+
+criterion = DiceLoss()
+
 # Choose parameters to optimise
 
 if trainging_mode=='head':
