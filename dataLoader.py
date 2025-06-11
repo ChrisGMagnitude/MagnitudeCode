@@ -144,6 +144,7 @@ class MagClassDataset(Dataset):
             label = [self.fh[l][idx] for l in self.label_fields]
             label = np.stack(label)
             print('label.shape 1',label.shape)
+            label = torch.from_numpy(label)
             label = transformer(label)
             print('label.shape 2',label.shape)
             stop
