@@ -18,7 +18,7 @@ import tqdm
 
 def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log, num_epochs=25):
     since = time.time()
-
+    miou = MeanIoU(per_class=True).to(device)
     # Create a temporary directory to save training checkpoints
     with TemporaryDirectory() as tempdir:
         best_model_params_path = os.path.join(tempdir, 'best_model_params.pt')
@@ -72,7 +72,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
 
                     # statistics
                     running_loss += loss.item() * inputs.size(0)
-                    miou = MeanIoU(per_class=True).to(device)
+                    
                     running_IOU = miou(torch.round(preds).int(), labels.int())
 
                 if phase == 'train':
