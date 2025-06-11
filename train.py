@@ -64,6 +64,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                         outputs = model(inputs)['out']
                         preds = torch.round(outputs)
                         loss = criterion(outputs, labels)
+                        preds = preds.to(device)
 
                         # backward + optimize only if in training phase
                         if phase == 'train':
