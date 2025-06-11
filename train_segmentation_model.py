@@ -26,7 +26,7 @@ epoch_size_train = 40*124*2#7680
 epoch_size_val = 40*32*4#1280
 batch_size = 40#32
 num_workers = 40#40
-description = 'Attempt-1'
+description = 'dice-loss'
 trainging_mode = 'final-fc'#'all'#'head'#'final-fc'#'first-conv'
 initial_weights = 'default'#r'/mnt/field/test/ml/cg/Classification Models/resplit_like_autoencoder - final-fc - 2025-05-06 134724'#'default'#
 lr = 0.02#0.1
@@ -39,10 +39,10 @@ num_epochs = 5
 model_path = r'/mnt/magbucket/segmentation/Models'
 
 train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',label_type=label_type)
-train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers)  
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)  
 
 val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=False,label_type=label_type)
-val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers)
+val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)
 
 dataloaders = {}
 dataloaders['train'] = train_loader
