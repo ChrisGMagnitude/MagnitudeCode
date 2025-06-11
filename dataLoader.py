@@ -33,13 +33,15 @@ class MagClassDataset(Dataset):
             binary_label = np.zeros(len(label))
             binary_label[np.array(label)=='archae']=1
             self.labels = binary_label.astype(float)
+            self.classes = np.unique(self.labels)
         elif label_type=='classification':
             self.labels = self.fh["labels"]
+            self.classes = np.unique(self.labels)
         elif label_type=='arch-segmentation':
             label = self.fh["archMask"]
             
 
-        self.classes = np.unique(self.labels)
+        
         self.crop_ranges = crop_ranges
         self.crop_jitter = crop_jitter
         self.max_white_noise = max_white_noise
