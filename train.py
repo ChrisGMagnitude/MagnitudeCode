@@ -62,9 +62,6 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     with torch.set_grad_enabled(phase == 'train'):
                         outputs = model(inputs)['out']
                         preds = torch.round(outputs)
-                        print('outputs.shape',outputs.shape)
-                        print('labels.shape',labels.shape)
-                        stop
                         loss = criterion(outputs, labels)
 
                         # backward + optimize only if in training phase
