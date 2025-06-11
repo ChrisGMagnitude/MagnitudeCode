@@ -145,8 +145,8 @@ class MagClassDataset(Dataset):
             label = np.stack(label)
             print('label.shape 1',label.shape)
             label = transformer(label)
-            print('label.shape 1',label.shape)
-
+            print('label.shape 2',label.shape)
+            stop
             return(image.type(torch.float),label)
         else:
             return image.type(torch.float)
