@@ -37,7 +37,7 @@ class MagClassDataset(Dataset):
             self.labels = self.fh["labels"]
             self.classes = np.unique(self.labels)
         elif label_type=='arch-segmentation':
-            label = self.fh["archMask"]
+            self.label_fields = ["archMask"]
             
         self.dataset_size = len(self.fh["images"])
         
@@ -134,7 +134,13 @@ class MagClassDataset(Dataset):
         image = transformer(image)
 
         if 'segmentation' in self.label_type:
-            label = transformer(self.fh["labels"][idx]) 
+
+            label = [self.fh[l][idx] for l in self.label_fields]
+
+            print(type(label[0]))
+            print(label[0].shape)
+            label = transformer() 
+
 
             return(image.type(torch.float),label)
         else:
