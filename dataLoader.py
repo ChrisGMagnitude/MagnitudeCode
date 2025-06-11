@@ -114,7 +114,7 @@ class MagClassDataset(Dataset):
         
         image = torch.from_numpy(image)
         
-        print('image.shape 1',image.shape)
+        print('image.shape 0',image.shape)
         
         if self.ViT_im_size:
             crop_size = self.ViT_im_size
@@ -135,7 +135,7 @@ class MagClassDataset(Dataset):
                                             transforms.v2.CenterCrop((crop_size,crop_size)),
                                             ])
             
-            
+        print('image.shape 1',image.shape)    
         image = transformer(image)
         print('image.shape 2',image.shape)
 
