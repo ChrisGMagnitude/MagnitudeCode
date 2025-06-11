@@ -35,7 +35,7 @@ gamma = 0.5 # 0.6
 num_epochs = 60
 
 
-model_path = r'/mnt/field/test/ml/cg/Segmentation/Models'
+model_path = r'/mnt/magbucket/segmentation/Models'
 
 train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',label_type=label_type)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers)  
