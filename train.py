@@ -44,8 +44,8 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                 else:
                     model.eval()   # Set model to evaluate mode
                 
-                running_loss = 0.0
-                running_corrects = 0
+                running_loss = []
+                running_IOU = []
 
                 # Iterate over data.
                 for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
@@ -71,20 +71,20 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                             optimizer.step()
 
                     # statistics
-                    running_loss += loss.item() * inputs.size(0)
+                    running_loss.append(loss.item() * inputs.size(0))
                     
-                    running_IOU = miou(torch.round(preds).int(), labels.int())
+                    running_IOU.append(miou(torch.round(preds).int(), labels.int()))
 
                 if phase == 'train':
                     scheduler.step()
                     
-                    epoch_loss = running_loss / log['epoch_size_train']
-                    epoch_acc = running_corrects.double() / log['epoch_size_train']
+                    epoch_loss = np.mean(running_loss)
+                    epoch_acc = np.mean(running_IOU)
                     train_loss.append(epoch_loss)
                     train_acc.append(epoch_acc.tolist())
                 else:
-                    epoch_loss = running_loss / log['epoch_size_val']
-                    epoch_acc = running_corrects.double() / log['epoch_size_val']
+                    epoch_loss = np.mean(running_loss)
+                    epoch_acc = np.mean(running_IOU)
                     val_loss.append(epoch_loss)
                     val_acc.append(epoch_acc.tolist())
                     
