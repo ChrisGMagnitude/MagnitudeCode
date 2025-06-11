@@ -64,7 +64,6 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                         outputs = model(inputs)['out']
                         preds = torch.round(outputs)
                         loss = criterion(outputs, labels)
-                        preds = preds.to(device)
 
                         # backward + optimize only if in training phase
                         if phase == 'train':
@@ -73,7 +72,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
 
                     # statistics
                     running_loss += loss.item() * inputs.size(0)
-                    miou = MeanIoU(per_class=True)
+                    miou = MeanIoU(per_class=True).to(device)
                     running_IOU = miou(torch.round(preds).int(), labels.int())
 
                 if phase == 'train':
