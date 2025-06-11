@@ -6,6 +6,7 @@ import torch.backends.cudnn as cudnn
 import numpy as np
 import torchvision
 from torchvision import datasets, models, transforms
+from torchmetrics.segmentation import MeanIoU
 import matplotlib.pyplot as plt
 import time
 from datetime import datetime
@@ -71,7 +72,8 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
 
                     # statistics
                     running_loss += loss.item() * inputs.size(0)
-                    running_corrects += torch.sum(preds == labels.data)
+                    miou = MeanIoU(per_class=True)
+                    running_IOU = miou(preds, labels)
 
                 if phase == 'train':
                     scheduler.step()
