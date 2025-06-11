@@ -35,12 +35,12 @@ gamma = 0.5 # 0.6
 num_epochs = 60
 
 
-model_path = r'/mnt/field/test/ml/cg/Classification Models'
+model_path = r'/mnt/field/test/ml/cg/Segmentation/Models'
 
-train_dataset = MagClassDataset(r'/mnt/docker/Autoencoder/segmentation-hdf5/train.hdf5',label_type=label_type)
+train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',label_type=label_type)
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers)  
 
-val_dataset = MagClassDataset(r'/mnt/docker/Autoencoder/segmentation-hdf5/valid.hdf5',augment=False,label_type=label_type)
+val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=False,label_type=label_type)
 val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers)
 
 dataloaders = {}
