@@ -73,7 +73,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     # statistics
                     running_loss += loss.item() * inputs.size(0)
                     miou = MeanIoU(per_class=True)
-                    running_IOU = miou(preds, labels)
+                    running_IOU = miou(torch.round(preds).int(), labels)
 
                 if phase == 'train':
                     scheduler.step()
