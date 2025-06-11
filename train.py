@@ -84,7 +84,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     train_acc.append(epoch_acc.tolist())
                 else:
                     epoch_loss = np.mean(running_loss)
-                    epoch_acc = np.mean(running_IOU.cpu())
+                    epoch_acc = np.mean(running_IOU)
                     val_loss.append(epoch_loss)
                     val_acc.append(epoch_acc.tolist())
                     
