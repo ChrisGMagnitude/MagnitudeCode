@@ -74,6 +74,9 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     running_loss.append(loss.item() * inputs.size(0))
                     
                     running_IOU.append(miou(torch.round(preds).int(), labels.int()).cpu())
+                    print(running_IOU)
+                    print(max(torch.round(preds).int(),max(labels.int())))
+                    print(min(torch.round(preds).int(),min(labels.int())))
 
                 if phase == 'train':
                     scheduler.step()
