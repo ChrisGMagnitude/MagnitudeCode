@@ -73,13 +73,13 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     # statistics
                     running_loss.append(loss.item() * inputs.size(0))
                     
-                    running_IOU.append(miou(torch.round(preds).int(), labels.int()))
+                    running_IOU.append(miou(torch.round(preds).int(), labels.int()).cpu())
 
                 if phase == 'train':
                     scheduler.step()
                     
                     epoch_loss = np.mean(running_loss)
-                    epoch_acc = np.mean(running_IOU.cpu())
+                    epoch_acc = np.mean(running_IOU)
                     train_loss.append(epoch_loss)
                     train_acc.append(epoch_acc.tolist())
                 else:
