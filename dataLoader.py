@@ -69,6 +69,10 @@ class MagClassDataset(Dataset):
             image = self.apply_transforms(image,idx)
             label = self.labels[idx]
         
+        print('image.shape',image.shape)
+        print('label.shape',label.shape)
+        stop
+        
         sample = [image, label]
         
 
