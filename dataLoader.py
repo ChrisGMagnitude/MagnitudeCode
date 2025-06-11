@@ -64,9 +64,9 @@ class MagClassDataset(Dataset):
         image = self.clip_and_normalise_data(image)
     
         if 'segmentation' in self.label_type:
-            image, label = self.apply_transforms(image)
+            image, label = self.apply_transforms(image,idx)
         else:
-            image = self.apply_transforms(image)
+            image = self.apply_transforms(image,idx)
             label = self.labels[idx]
         
         sample = [image, label]
@@ -106,7 +106,7 @@ class MagClassDataset(Dataset):
         
         return np.array(output)
         
-    def apply_transforms(self,image):
+    def apply_transforms(self,image,idx):
         
         image = torch.from_numpy(image)
         
