@@ -24,7 +24,6 @@ class MagClassDataset(Dataset):
         """
         self.hdf5_file = hdf5_file
         self.fh = h5py.File(self.hdf5_file, "r")
-        
         self.label_type = label_type
 
         if label_type=='binary':
@@ -40,7 +39,7 @@ class MagClassDataset(Dataset):
         elif label_type=='arch-segmentation':
             label = self.fh["archMask"]
             
-
+        self.dataset_size = len(self.fh["images"])
         
         self.crop_ranges = crop_ranges
         self.crop_jitter = crop_jitter
@@ -53,7 +52,7 @@ class MagClassDataset(Dataset):
         
         
     def __len__(self):
-        return len(self.labels)
+        return len(self.dataset_size)
 
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
