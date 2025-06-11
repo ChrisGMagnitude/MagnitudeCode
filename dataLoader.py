@@ -72,7 +72,7 @@ class MagClassDataset(Dataset):
         print('image.shape',image.shape)
         print('label.shape',label.shape)
         stop
-        
+
         sample = [image, label]
         
 
@@ -114,6 +114,7 @@ class MagClassDataset(Dataset):
         
         image = torch.from_numpy(image)
         
+        print('image.shape 1',image.shape)
         
         if self.ViT_im_size:
             crop_size = self.ViT_im_size
@@ -136,12 +137,15 @@ class MagClassDataset(Dataset):
             
             
         image = transformer(image)
+        print('image.shape 2',image.shape)
 
         if 'segmentation' in self.label_type:
 
             label = [self.fh[l][idx] for l in self.label_fields]
-            label = transformer(np.stack(label)) 
-
+            label = np.stack(label)
+            print('label.shape 1',label.shape)
+            label = transformer(label)
+            print('label.shape 1',label.shape)
 
             return(image.type(torch.float),label)
         else:
