@@ -136,10 +136,7 @@ class MagClassDataset(Dataset):
         if 'segmentation' in self.label_type:
 
             label = [self.fh[l][idx] for l in self.label_fields]
-
-            print(type(label[0]))
-            print(label[0].shape)
-            label = transformer() 
+            label = transformer(np.stack(label)) 
 
 
             return(image.type(torch.float),label)
