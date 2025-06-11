@@ -52,7 +52,7 @@ class MagClassDataset(Dataset):
         
         
     def __len__(self):
-        return len(self.dataset_size)
+        return self.dataset_size
 
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
