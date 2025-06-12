@@ -73,16 +73,16 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     # statistics
                     running_loss.append(loss.item() * inputs.size(0))
                     
-                    print(preds)
-                    print(torch.round(preds))
-                    print(torch.round(preds).int())
-                    print(torch.round(preds).int().cpu())
-                    print(torch.round(preds).int().cpu().numpy())
+                    #print(preds)
+                    #print(torch.round(preds))
+                    #print(torch.round(preds).int())
+                    #print(torch.round(preds).int().cpu())
+                    #print(torch.round(preds).int().cpu().numpy())
 
-                    print(max(torch.round(preds).int().cpu().numpy()))
-                    print(max(labels.int().cpu().numpy()))
-                    print(min(torch.round(preds).int().cpu().numpy()))
-                    print(min(labels.int().cpu().numpy()))
+                    print(np.max(torch.round(preds).int().cpu().numpy()))
+                    print(np.max(labels.int().cpu().numpy()))
+                    print(np.min(torch.round(preds).int().cpu().numpy()))
+                    print(np.min(labels.int().cpu().numpy()))
 
                     running_IOU.append(miou(torch.round(preds).int().cpu().numpy(), labels.int().cpu().numpy()))
                     print(running_IOU)
