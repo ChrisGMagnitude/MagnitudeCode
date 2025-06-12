@@ -103,7 +103,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     val_loss.append(epoch_loss)
                     val_acc.append(epoch_acc.tolist())
                     
-                print(f'{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
+                print(f'{phase} Loss: {epoch_loss:.4f} IoU: {epoch_acc:.4f}')
                 print()
                 # deep copy the model
                 if phase == 'val' and epoch_acc > best_acc:
