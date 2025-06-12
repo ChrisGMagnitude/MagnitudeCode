@@ -112,6 +112,10 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
 
             print()
         
+
+        torch.save(model.state_dict(), os.path.join(log['model_path'],log['name'],'last_model_params.pt'))
+
+
         time_elapsed = time.time() - since
         print(f'Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s')
         print(f'Best val Acc: {best_acc:4f}')
