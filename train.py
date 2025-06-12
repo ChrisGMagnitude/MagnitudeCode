@@ -6,6 +6,7 @@ import torch.backends.cudnn as cudnn
 import numpy as np
 import torchvision
 from torchvision import datasets, models, transforms
+import torchmetrics
 from torchmetrics.segmentation import MeanIoU
 import matplotlib.pyplot as plt
 import time
