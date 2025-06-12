@@ -73,6 +73,11 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     # statistics
                     running_loss.append(loss.item() * inputs.size(0))
                     
+                    print(preds)
+                    print(torch.round(preds))
+                    print(torch.round(preds).int())
+                    print(torch.round(preds).int().cpu())
+                    print(torch.round(preds).int().cpu().numpy())
 
                     print(max(torch.round(preds).int().cpu().numpy()))
                     print(max(labels.int().cpu().numpy()))
