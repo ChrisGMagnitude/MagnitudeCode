@@ -62,8 +62,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     # forward
                     # track history if only in train
                     with torch.set_grad_enabled(phase == 'train'):
-                        outputs = model(inputs)['out']
-                        preds = outputs
+                        outputs = torch.sigmoid(model(inputs)['out'])
                         loss = criterion(outputs, labels)
 
                         # backward + optimize only if in training phase
@@ -85,7 +84,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     #print(np.min(torch.round(preds).int().cpu().numpy()))
                     #print(np.min(labels.int().cpu().numpy()))
                     #running_IOU.append(0)
-                    class_preds = (preds>0.5).int()
+                    class_preds = (outputs>0.5).int()
                     running_IOU.append(miou(class_preds, labels.int()).item())
                     #print(running_IOU)
                     
