@@ -79,12 +79,12 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     #print(torch.round(preds).int().cpu())
                     #print(torch.round(preds).int().cpu().numpy())
 
-                    print(np.max(torch.round(preds).int().cpu().numpy()))
-                    print(np.max(labels.int().cpu().numpy()))
-                    print(np.min(torch.round(preds).int().cpu().numpy()))
-                    print(np.min(labels.int().cpu().numpy()))
+                    #print(np.max(torch.round(preds).int().cpu().numpy()))
+                    #print(np.max(labels.int().cpu().numpy()))
+                    #print(np.min(torch.round(preds).int().cpu().numpy()))
+                    #print(np.min(labels.int().cpu().numpy()))
 
-                    running_IOU.append(miou(torch.round(preds).int().cpu(), labels.int().cpu()).item())
+                    running_IOU.append(miou(torch.round(preds).int(), labels.int()).item())
                     print(running_IOU)
                     
 
