@@ -87,7 +87,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     #running_IOU.append(0)
                     class_preds = (preds>0.5).int()
                     running_IOU.append(miou(class_preds, labels.int()).item())
-                    print(running_IOU)
+                    #print(running_IOU)
                     
 
                 if phase == 'train':
