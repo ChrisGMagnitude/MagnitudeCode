@@ -109,7 +109,27 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     best_acc = epoch_acc
                     best_epoch = epoch
                     torch.save(model.state_dict(), best_model_params_path)
+            
+            if epoch%5 == 0:
+                torch.save(model.state_dict(), os.path.join(log['model_path'],log['name'],str(epoch)+'_epoch_model_params.pt'))
 
+                log2 = log.copy()
+                log2['train_loss'] = train_loss
+                log2['val_loss'] = val_loss
+                log2['train_acc'] = train_acc
+                log2['val_acc'] = val_acc
+                if log2['initial_weights'] == 'default':    
+                    with open(os.path.join(log2['model_path'],log2['name'],str(epoch)+'_epoch_training_log.json'), 'w') as f:
+                        record = {}
+                        record[0] = log2
+                        json.dump(record, f)
+                else:
+                    with open(os.path.join(log2['initial_weights'],'training_log.json'), 'r') as f:
+                        record = json.load(f)
+                        record[len(record)] = log2
+                    with open(os.path.join(log2['model_path'],log2['name'],str(epoch)+'_epoch_training_log.json'), 'w') as f:
+                        json.dump(record, f)
+        
             print()
         
 
