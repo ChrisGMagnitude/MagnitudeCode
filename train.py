@@ -84,8 +84,9 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     #print(np.max(labels.int().cpu().numpy()))
                     #print(np.min(torch.round(preds).int().cpu().numpy()))
                     #print(np.min(labels.int().cpu().numpy()))
-                    running_IOU.append(0)
-                    #running_IOU.append(miou(torch.round(preds).int(), labels.int()).item())
+                    #running_IOU.append(0)
+                    class_preds = (preds>0.5).int()
+                    running_IOU.append(miou(class_preds, labels.int()).item())
                     print(running_IOU)
                     
 
