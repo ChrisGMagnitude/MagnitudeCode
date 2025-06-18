@@ -38,6 +38,8 @@ class MagClassDataset(Dataset):
             self.classes = np.unique(self.labels)
         elif label_type=='arch-segmentation':
             self.label_fields = ["archMask"]
+        elif label_type=='all-segmentation':
+            self.label_fields = ["archMask","agriMask","naturalMask","modernMask"]
             
         self.dataset_size = len(self.fh["images"])
         
@@ -84,8 +86,8 @@ class MagClassDataset(Dataset):
             # Clip data
             if self.augment:
                 jitter = np.random.uniform(low=-self.crop_jitter[i],
-                                       high=self.crop_jitter[i],
-                                       size=2)
+                                           high=self.crop_jitter[i],
+                                           size=2)
                                        
                 low_clip = r[0]+jitter[0]    
                 high_clip = r[1]+jitter[1] 
