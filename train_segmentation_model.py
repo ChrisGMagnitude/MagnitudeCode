@@ -26,7 +26,7 @@ epoch_size_train = 20*124*1#7680
 epoch_size_val = 20*32*2#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'dice-loss'
+description = 'dice-loss-noAugmentation'
 trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
 initial_weights = r'/mnt/magbucket/segmentation/Models/dice-loss - head - 2025-06-18 163732'#'default'#
 lr = 0.0001#0.0005#0.02#0.1
@@ -38,7 +38,7 @@ num_epochs = 50
 
 model_path = r'/mnt/magbucket/segmentation/Models'
 
-train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',label_type=label_type)
+train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',augment=False,label_type=label_type)
 val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=False,label_type=label_type)
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)  
