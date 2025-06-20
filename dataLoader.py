@@ -124,16 +124,16 @@ class MagClassDataset(Dataset):
             #image = image + (rand**0.5)*torch.randn(image.shape)
             
             transformer = transforms.Compose([
-                                            transforms.v2.CenterCrop((crop_size,crop_size)),
                                             transforms.v2.RandomRotation(degrees=(0, 360)),
                                             transforms.v2.RandomHorizontalFlip()
+                                            transforms.v2.CenterCrop((crop_size,crop_size)),
                                             ])
         else:
             transformer = transforms.Compose([
                                             transforms.v2.CenterCrop((crop_size,crop_size)),
                                             ])
             
-        image = transformer(image)
+        
 
         if 'segmentation' in self.label_type:
 
@@ -141,8 +141,15 @@ class MagClassDataset(Dataset):
             label = np.stack(label)
             label = torch.from_numpy(label)
             label = transformer(label)
+
+            t = transformer(torch.cat([image,label],dim=0))
+
+            image = t[:3,:,:]
+            label = t[3:,:,:]
+
             return(image.type(torch.float),label)
         else:
+            image = transformer(image)
             return image.type(torch.float)
         
         
