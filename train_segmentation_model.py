@@ -85,7 +85,7 @@ model.classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stri
 
 
 if initial_weights != 'default':
-    model.load_state_dict(torch.load(os.path.join(initial_weights,'best_model_params.pt'), weights_only=True))
+    model.load_state_dict(torch.load(os.path.join(initial_weights,'last_model_params.pt'), weights_only=True))
     model.eval()
 
 model = model.to(device)
