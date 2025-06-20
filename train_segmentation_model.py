@@ -26,14 +26,14 @@ epoch_size_train = 20*124*1#7680
 epoch_size_val = 20*32*2#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'dice-loss-noAugmentation'
-trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
-initial_weights = r'/mnt/magbucket/segmentation/Models/dice-loss - head - 2025-06-18 163732'#'default'#
-lr = 0.0001#0.0005#0.02#0.1
+description = 'dice-loss-noAugmentationFromStart'
+trainging_mode = 'final-fc'#'all'#'head'#'final-fc'#'first-conv'
+initial_weights = 'default'#r'/mnt/magbucket/segmentation/Models/dice-loss - head - 2025-06-18 163732'#'default'#
+lr = 0.1#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.25 # 0.6
-num_epochs = 50
+num_epochs = 5
 
 
 model_path = r'/mnt/magbucket/segmentation/Models'
