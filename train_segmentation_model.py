@@ -33,7 +33,7 @@ lr = 0.0001#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.5 # 0.6
-num_epochs = 30
+num_epochs = 50
 
 
 model_path = r'/mnt/magbucket/segmentation/Models'
