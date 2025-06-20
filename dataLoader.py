@@ -142,6 +142,9 @@ class MagClassDataset(Dataset):
             label = torch.from_numpy(label)
             label = transformer(label)
 
+            print('image.shape',image.shape)
+            print('label.shape',label.shape)
+
             t = transformer(torch.cat([image,label],dim=0))
 
             image = t[:3,:,:]
