@@ -89,8 +89,8 @@ class MagClassDataset(Dataset):
                                            high=self.crop_jitter[i],
                                            size=2)
                                        
-                low_clip = r[0]#+jitter[0]    
-                high_clip = r[1]#+jitter[1] 
+                low_clip = r[0]+jitter[0]    
+                high_clip = r[1]+jitter[1] 
 
             else:
                 low_clip = r[0]   
@@ -120,8 +120,8 @@ class MagClassDataset(Dataset):
         
 
         if self.augment:
-            #rand = np.random.uniform(low=0,high=self.max_white_noise)
-            #image = image + (rand**0.5)*torch.randn(image.shape)
+            rand = np.random.uniform(low=0,high=self.max_white_noise)
+            image = image + (rand**0.5)*torch.randn(image.shape)
             
             transformer = transforms.Compose([
                                             transforms.v2.RandomRotation(degrees=(0, 360)),
