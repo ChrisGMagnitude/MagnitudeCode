@@ -15,7 +15,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 class MagClassDataset(Dataset):
 
     def __init__(self, hdf5_file, 
-                 augment=True, crop_ranges=[[-1,2],[-3,5],[-10,20]], crop_jitter=[0.25,0.5,2], max_white_noise=0.05,label_type='binary',ViT_im_size = False):
+                 augment=True, crop_ranges=[[-1,2],[-3,5],[-10,20]], crop_jitter=[0.25,0.5,2], max_white_noise=0.05,label_type='binary',ViT_im_size = False,translate=0.1):
         """
         Arguments:
             csv_file (string): Path to the HDF5 file.
@@ -46,6 +46,7 @@ class MagClassDataset(Dataset):
         self.crop_ranges = crop_ranges
         self.crop_jitter = crop_jitter
         self.max_white_noise = max_white_noise
+        self.translate = translate
         self.augment = augment
         self.ViT_im_size = ViT_im_size
            
@@ -124,7 +125,8 @@ class MagClassDataset(Dataset):
             image = image + (rand**0.5)*torch.randn(image.shape)
             
             transformer = transforms.Compose([
-                                            transforms.v2.RandomRotation(degrees=(0, 360)),
+                                            transforms.v2.RandomAffine(degrees=(0, 360),
+                                                                       translate=(self.translate,self.translate))
                                             transforms.v2.RandomHorizontalFlip(),
                                             transforms.v2.CenterCrop((crop_size,crop_size))
                                             ])
