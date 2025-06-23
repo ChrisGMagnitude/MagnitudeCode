@@ -28,12 +28,12 @@ batch_size = 40#32
 num_workers = 8#40
 description = 'dice-loss-fixedRotate'
 trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
-initial_weights = r'/mnt/magbucket/segmentation/Models/dice-loss-fixedRotate - head - 2025-06-20 122006'#'default'#
-lr = 0.0001#0.0005#0.02#0.1
+initial_weights = r'/mnt/magbucket/segmentation/Models/dice-loss-fixedRotate - all - 2025-06-20 164913'#'default'#
+lr = 0.001#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.5 # 0.6
-num_epochs = 50
+num_epochs = 10
 
 
 model_path = r'/mnt/magbucket/segmentation/Models'
