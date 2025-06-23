@@ -126,7 +126,7 @@ class MagClassDataset(Dataset):
             
             transformer = transforms.Compose([
                                             transforms.v2.RandomAffine(degrees=(0, 360),
-                                                                       translate=(self.translate,self.translate))
+                                                                       translate=(self.translate,self.translate)),
                                             transforms.v2.RandomHorizontalFlip(),
                                             transforms.v2.CenterCrop((crop_size,crop_size))
                                             ])

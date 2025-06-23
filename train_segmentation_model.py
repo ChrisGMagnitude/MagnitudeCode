@@ -32,8 +32,8 @@ initial_weights = r'/mnt/magbucket/segmentation/Models/fixedRotate+noise - all -
 lr = 0.001#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
-gamma = 0.5 # 0.6
-num_epochs = 10
+gamma = 0.9 # 0.6
+num_epochs = 30
 
 
 model_path = r'/mnt/magbucket/segmentation/Models'
