@@ -28,8 +28,8 @@ batch_size = 40#32
 num_workers = 8#40
 description = 'fixedRotate+noise'
 trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
-initial_weights = r'/mnt/magbucket/segmentation/Models/dice-loss-fixedRotate - all - 2025-06-23 090055'#'default'#
-lr = 0.001#0.0005#0.02#0.1
+initial_weights = r'/mnt/magbucket/segmentation/Models/fixedRotate+noise - all - 2025-06-23 105046'#'default'#
+lr = 0.01#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.5 # 0.6
@@ -39,7 +39,7 @@ num_epochs = 10
 model_path = r'/mnt/magbucket/segmentation/Models'
 
 train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',augment=True,label_type=label_type,
-                               crop_jitter=[0.05,0.1,0.4], max_white_noise=0.01)
+                               crop_jitter=[0.15,0.3,1.2], max_white_noise=0.03)
 val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=False,label_type=label_type)
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)  
