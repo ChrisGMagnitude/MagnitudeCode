@@ -80,7 +80,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
 
                     class_preds = (outputs>0.5).int()
                     running_IOU.append(miou(class_preds, labels.int()).item())
-                    running_IOU_per_class.append(miou_pc(class_preds, labels.int()).item())
+                    running_IOU_per_class.append(miou_pc(class_preds, labels.int()))
                     #print(running_IOU)
                     
 
