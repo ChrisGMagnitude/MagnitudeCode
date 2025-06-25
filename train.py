@@ -100,7 +100,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     val_acc_pc.append(np.array(running_IOU_per_class).mean(axis=0))
                     
                 print(f'{phase} Loss: {epoch_loss:.4f} Total IoU: {epoch_acc:.4f}')
-                print(f'IoU per class: {val_acc_pc[-1]}')
+                print(f'IoU per class: {np.array(running_IOU_per_class).mean(axis=0)}')
                 print()
                 # deep copy the model
                 if phase == 'val' and epoch_acc > best_acc:
