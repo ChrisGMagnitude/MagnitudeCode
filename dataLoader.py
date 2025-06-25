@@ -141,7 +141,7 @@ class MagClassDataset(Dataset):
 
         if 'segmentation' in self.label_type:
 
-            label = [self.fh[l][idx] for l in self.classes]
+            label = [self.fh[l][idx] for l in self.label_fields]
             label = np.stack(label)
             label = torch.from_numpy(label)
 
