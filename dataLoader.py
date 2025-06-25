@@ -162,6 +162,9 @@ def make_weights_for_balanced_classes(classes, nclasses):
     classes_int = np.array([0] * len(classes) )
     for i,c in enumerate(np.unique(classes)):
         classes_int[classes==c] = i
+
+    print(np.unique(classes))
+    print(np.unique(classes_int))
     # Count number intances of each class
     count = [0] * nclasses       
     for item in classes_int:          
