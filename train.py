@@ -32,6 +32,8 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
         val_loss = []
         train_acc = []
         val_acc = []
+        train_acc_pc = []
+        val_acc_pc = []
         
         
         for epoch in range(num_epochs):
@@ -47,6 +49,7 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                 
                 running_loss = []
                 running_IOU = []
+                running_IOU_per_class = []
 
                 # Iterate over data.
                 for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
@@ -73,19 +76,10 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     # statistics
                     running_loss.append(loss.item() * inputs.size(0)) # * Batch Size
                     
-                    #print(preds)
-                    #print(torch.round(preds))
-                    #print(torch.round(preds).int())
-                    #print(torch.round(preds).int().cpu())
-                    #print(torch.round(preds).int().cpu().numpy())
 
-                    #print(np.max(torch.round(preds).int().cpu().numpy()))
-                    #print(np.max(labels.int().cpu().numpy()))
-                    #print(np.min(torch.round(preds).int().cpu().numpy()))
-                    #print(np.min(labels.int().cpu().numpy()))
-                    #running_IOU.append(0)
                     class_preds = (outputs>0.5).int()
                     running_IOU.append(miou(class_preds, labels.int()).item())
+                    running_IOU_per_class.append(miou(class_preds, labels.int(), per_class=True).item())
                     #print(running_IOU)
                     
 
@@ -96,13 +90,16 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     epoch_acc = np.mean(running_IOU)
                     train_loss.append(epoch_loss)
                     train_acc.append(epoch_acc.tolist())
+                    train_acc_pc.append(np.array(running_IOU_per_class).mean(axis=0))
                 else:
                     epoch_loss = np.mean(running_loss)
                     epoch_acc = np.mean(running_IOU)
                     val_loss.append(epoch_loss)
                     val_acc.append(epoch_acc.tolist())
+                    val_acc_pc.append(np.array(running_IOU_per_class).mean(axis=0))
                     
-                print(f'{phase} Loss: {epoch_loss:.4f} IoU: {epoch_acc:.4f}')
+                print(f'{phase} Loss: {epoch_loss:.4f} Total IoU: {epoch_acc:.4f}')
+                print(f'IoU per class: {val_acc_pc[-1]}')
                 print()
                 # deep copy the model
                 if phase == 'val' and epoch_acc > best_acc:
