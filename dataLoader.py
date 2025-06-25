@@ -156,15 +156,22 @@ class MagClassDataset(Dataset):
             return image.type(torch.float)
         
         
-def make_weights_for_balanced_classes(classes, nclasses):  
-    classes = classes.astype(int)
+def make_weights_for_balanced_classes(classes, nclasses):
+
+    # Turn classes list of strings in to integers
+    classes_int = np.array([0] * len(classes) )
+    for i,c in enumerate(np.unique(classes)):
+        classes_int[classes==c] = i
+    # Count number intances of each class
     count = [0] * nclasses       
-    for item in classes:          
-        count[item] += 1                                                     
+    for item in classes_int:          
+        count[item] += 1          
+    # Calculate weight of each class type                                          
     weight_per_class = [0.] * nclasses                                      
     N = float(sum(count))                                                   
     for i in range(nclasses):                                                   
-        weight_per_class[i] = N/float(count[i])                                 
+        weight_per_class[i] = N/float(count[i])
+    # Create vector with weight for each sample                         
     weight = [0] * len(classes)                                              
     for idx, val in enumerate(classes):                     
         weight[idx] = weight_per_class[val]                                  
