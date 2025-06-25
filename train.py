@@ -91,13 +91,13 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     epoch_acc = np.mean(running_IOU)
                     train_loss.append(epoch_loss)
                     train_acc.append(epoch_acc.tolist())
-                    train_acc_pc.append(np.array(running_IOU_per_class).mean(axis=0))
+                    train_acc_pc.append(np.array(running_IOU_per_class.cpu()).mean(axis=0))
                 else:
                     epoch_loss = np.mean(running_loss)
                     epoch_acc = np.mean(running_IOU)
                     val_loss.append(epoch_loss)
                     val_acc.append(epoch_acc.tolist())
-                    val_acc_pc.append(np.array(running_IOU_per_class).mean(axis=0))
+                    val_acc_pc.append(np.array(running_IOU_per_class.cpu()).mean(axis=0))
                     
                 print(f'{phase} Loss: {epoch_loss:.4f} Total IoU: {epoch_acc:.4f}')
                 print(f'IoU per class: {val_acc_pc[-1]}')
