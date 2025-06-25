@@ -156,8 +156,9 @@ class MagClassDataset(Dataset):
             return image.type(torch.float)
         
         
-def make_weights_for_balanced_classes(classes, nclasses):
+def make_weights_for_balanced_classes(classes):
 
+    nclasses = len(np.unique(classes))
     # Turn classes list of strings in to integers
     classes_int = np.array([0] * len(classes) )
     for i,c in enumerate(np.unique(classes)):
@@ -189,7 +190,7 @@ def make_weights_for_balanced_classes(classes, nclasses):
                                                         
 def get_weighted_data_loader(dataset,epoch_size,batch_size,num_workers=40):                                                        
     # For unbalanced dataset we create a weighted sampler   
-    weights = make_weights_for_balanced_classes(dataset.image_class, len(dataset.label_fields))     
+    weights = make_weights_for_balanced_classes(dataset.image_class)     
                                                             
     weights = torch.DoubleTensor(weights)
     
