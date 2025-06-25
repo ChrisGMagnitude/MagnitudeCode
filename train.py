@@ -117,8 +117,8 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                 log2['val_loss'] = val_loss
                 log2['train_acc'] = train_acc
                 log2['val_acc'] = val_acc
-                log2['train_acc_pc'] = [list(x) for x in train_acc_pc]
-                log2['val_acc_pc'] = [list(x) for x in val_acc_pc]
+                log2['train_acc_pc'] = [[str(y) for y in x] for x in train_acc_pc]
+                log2['val_acc_pc'] = [[str(y) for y in x] for x in val_acc_pc]
                 if log2['initial_weights'] == 'default':    
                     with open(os.path.join(log2['model_path'],log2['name'],str(epoch)+'_epoch_training_log.json'), 'w') as f:
                         record = {}
@@ -150,8 +150,8 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
         log['val_loss'] = val_loss
         log['train_acc'] = train_acc
         log['val_acc'] = val_acc
-        log['train_acc_pc'] = [list(x) for x in train_acc_pc]
-        log['val_acc_pc'] = [list(x) for x in val_acc_pc]
+        log['train_acc_pc'] = [[str(y) for y in x] for x in train_acc_pc]
+        log['val_acc_pc'] = [[str(y) for y in x] for x in val_acc_pc]
         log['best_epoch'] = best_epoch
         
         
