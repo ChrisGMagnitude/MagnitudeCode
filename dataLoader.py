@@ -181,7 +181,7 @@ def make_weights_for_balanced_classes(classes):
         weight_per_class[i] = N/float(count[i])
     # Create vector with weight for each sample                         
     weight = [0] * len(classes)                                              
-    for idx, val in enumerate(classes):                     
+    for idx, val in enumerate(classes_int):                     
         weight[idx] = weight_per_class[val]                                  
     return weight
 
