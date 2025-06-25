@@ -166,6 +166,8 @@ def make_weights_for_balanced_classes(classes, nclasses):
     count = [0] * nclasses       
     for item in classes_int:          
         count[item] += 1          
+    print('count')
+    print(count)
     # Calculate weight of each class type                                          
     weight_per_class = [0.] * nclasses                                      
     N = float(sum(count))                                                   
