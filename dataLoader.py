@@ -162,18 +162,11 @@ def make_weights_for_balanced_classes(classes):
     # Turn classes list of strings in to integers
     classes_int = np.array([0] * len(classes) )
     for i,c in enumerate(np.unique(classes)):
-        print(i,c)
-        print(sum(np.array(classes)==c))
         classes_int[np.array(classes)==c] = i
-
-    print(np.unique(classes))
-    print(np.unique(classes_int))
     # Count number intances of each class
     count = [0] * nclasses       
     for item in classes_int:          
-        count[item] += 1          
-    print('count')
-    print(count)
+        count[item] += 1
     # Calculate weight of each class type                                          
     weight_per_class = [0.] * nclasses                                      
     N = float(sum(count))                                                   
