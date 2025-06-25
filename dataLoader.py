@@ -40,6 +40,7 @@ class MagClassDataset(Dataset):
             self.label_fields = ["archMask"]
         elif label_type=='all-segmentation':
             self.label_fields = ["archMask","agriMask","naturalMask","modernMask"]
+            self.image_class = self.fh["class"]
             
         self.dataset_size = len(self.fh["images"])
         
@@ -123,7 +124,8 @@ class MagClassDataset(Dataset):
         if self.augment:
             rand = np.random.uniform(low=0,high=self.max_white_noise)
             image = image + (rand**0.5)*torch.randn(image.shape)
-            
+            image = torch.clamp(image, min=0, max=1)
+
             transformer = transforms.Compose([
                                             transforms.v2.RandomAffine(degrees=(0, 360),
                                                                        translate=(self.translate,self.translate)),
@@ -139,7 +141,7 @@ class MagClassDataset(Dataset):
 
         if 'segmentation' in self.label_type:
 
-            label = [self.fh[l][idx] for l in self.label_fields]
+            label = [self.fh[l][idx] for l in self.classes]
             label = np.stack(label)
             label = torch.from_numpy(label)
 
@@ -173,7 +175,7 @@ def make_weights_for_balanced_classes(classes, nclasses):
                                                         
 def get_weighted_data_loader(dataset,epoch_size,batch_size,num_workers=40):                                                        
     # For unbalanced dataset we create a weighted sampler   
-    weights = make_weights_for_balanced_classes(dataset.labels, len(dataset.classes))     
+    weights = make_weights_for_balanced_classes(dataset.image_class, len(dataset.label_fields))     
                                                             
     weights = torch.DoubleTensor(weights)
     
@@ -183,65 +185,3 @@ def get_weighted_data_loader(dataset,epoch_size,batch_size,num_workers=40):
                                              sampler = sampler, pin_memory=True,num_workers=num_workers)      
     return data_loader
                                              
-#train_dataset = MagClassDataset(r'F:\test\ml\cg\FirstDataset\train.hdf5')
-#train_loader = get_weighted_data_loader(train_dataset) 
-
-#for i,x in train_loader:
-#    print(i,x)
-
-
-#for i in range(20):
-#    d = dataset[20100]
-#    image = d['image']
-#    label = d['label'].decode()
-#    project = d['project'].decode()
-#    
-#    plt.imshow(image[2,:,:],cmap='gray')
-#    plt.savefig('20100_'+str(i)+'_'+label+'_'+project.strip()+r'_rotcrop.png')
-#    plt.clf()
-
-#print(dataset.__len__())
-#print(np.arange(24)*1000)
-#
-#
-#for i in np.arange(24)*1000:
-#    d = dataset[i]
-#    image = d['image']
-#    label = d['label'].decode()
-#    project = d['project'].decode()
-#    
-#    a = np.arange(360)
-#    x = np.sin(np.radians(a))*image.shape[1]/2 + image.shape[1]/2
-#    y = np.cos(np.radians(a))*image.shape[1]/2 + image.shape[1]/2
-#    
-#    plt.plot(x,y,'r')
-#    plt.plot([83,483,483,83,83],[483,483,83,83,483],'g')
-#    #stop
-#    
-#    plt.imshow(image[2,:,:],cmap='gray')
-#    plt.savefig(str(i)+'_'+label+'_'+project.strip()+r'_raw.png')
-#    plt.clf()
-#    
-#    image = torch.from_numpy(image)
-#    
-#    crop_size = int(round(np.sqrt(image.shape[1]**2/2)))
-#    cropper = transforms.v2.CenterCrop((crop_size,crop_size))
-#    
-#    rotator = transforms.v2.RandomRotation(degrees=(0, 360))
-#    
-#    image_rot = rotator(image)
-#    
-#    plt.plot(x,y,'r')
-#    plt.plot([83,483,483,83,83],[483,483,83,83,483],'g')
-#    
-#    plt.imshow(image_rot[2,:,:],cmap='gray')
-#    plt.savefig(str(i)+'_'+label+'_'+project.strip()+r'_rot.png')
-#    plt.clf()
-#    
-#    image_rotcrop = cropper(image_rot)
-#    
-#    plt.imshow(image_rotcrop[2,:,:],cmap='gray')
-#    plt.savefig(str(i)+'_'+label+'_'+project.strip()+r'_rotcrop.png')
-#    plt.clf()
-#    
-#    #stop

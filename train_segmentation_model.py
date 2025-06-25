@@ -22,28 +22,32 @@ current_time = datetime.now()
 architecture = 'deeplabv3_resnet50'
 label_type = 'all-segmentation'
 num_classes = 4
-epoch_size_train = 20*124*1#7680
-epoch_size_val = 20*32*2#1280
+epoch_size_train = 20*124*10#7680
+epoch_size_val = 20*32*5#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'fixedRotate+noise'
-trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
-initial_weights = r'/mnt/magbucket/segmentation/Models/fixedRotate+noise - all - 2025-06-23 133622'#'default'#
-lr = 0.001#0.0005#0.02#0.1
+description = 'balanced'
+trainging_mode = 'final-fc'#'all'#'head'#'final-fc'#'first-conv'
+initial_weights = 'default'#r'/mnt/magbucket/segmentation/Models/fixedRotate+noise - all - 2025-06-23 133622'#'default'#
+lr = 0.1#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.9 # 0.6
-num_epochs = 30
+num_epochs = 5
 
 
 model_path = r'/mnt/magbucket/segmentation/Models'
 
 train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',augment=True,label_type=label_type,
-                               crop_jitter=[0.15,0.3,1.2], max_white_noise=0.03)
+                               crop_jitter=[0.15,0.3,1.2], max_white_noise=0.001)
 val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=False,label_type=label_type)
 
-train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)  
-val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)
+#train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)  
+#val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)
+
+train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size,num_workers=num_workers)
+val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size,num_workers=num_workers)
+
 
 dataloaders = {}
 dataloaders['train'] = train_loader
