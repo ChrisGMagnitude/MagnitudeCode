@@ -100,7 +100,8 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                     val_acc_pc.append(np.array(running_IOU_per_class).mean(axis=0))
                     
                 print(f'{phase} Loss: {epoch_loss:.4f} Total IoU: {epoch_acc:.4f}')
-                print(f'IoU per class: {np.array(running_IOU_per_class).mean(axis=0)}')
+                print(f'IoU per class: ["archMask","agriMask","naturalMask","modernMask"]')
+                print(np.array(running_IOU_per_class).mean(axis=0))
                 print()
                 # deep copy the model
                 if phase == 'val' and epoch_acc > best_acc:
@@ -116,8 +117,8 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
                 log2['val_loss'] = val_loss
                 log2['train_acc'] = train_acc
                 log2['val_acc'] = val_acc
-                log2['train_acc_pc'] = train_acc_pc
-                log2['val_acc_pc'] = val_acc_pc
+                log2['train_acc_pc'] = [list(x) for x in train_acc_pc]
+                log2['val_acc_pc'] = [list(x) for x in val_acc_pc]
                 if log2['initial_weights'] == 'default':    
                     with open(os.path.join(log2['model_path'],log2['name'],str(epoch)+'_epoch_training_log.json'), 'w') as f:
                         record = {}
@@ -149,7 +150,8 @@ def train_model(model, criterion, optimizer, scheduler, device, dataloaders, log
         log['val_loss'] = val_loss
         log['train_acc'] = train_acc
         log['val_acc'] = val_acc
-        
+        log['train_acc_pc'] = [list(x) for x in train_acc_pc]
+        log['val_acc_pc'] = [list(x) for x in val_acc_pc]
         log['best_epoch'] = best_epoch
         
         
