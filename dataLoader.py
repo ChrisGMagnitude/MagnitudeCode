@@ -44,7 +44,7 @@ class MagClassDataset(Dataset):
         elif label_type=='merged-segmentation':
             self.label_fields = ["combinedMask","naturalMask"]
             print(self.fh.keys())
-            if not 'class' in self.fh.keys():
+            if not 'class' in np.array(self.fh.keys()):
                 print("calculating image class")
             stop
             
