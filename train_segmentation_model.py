@@ -20,7 +20,7 @@ from train import train_model
 
 current_time = datetime.now()
 architecture = 'deeplabv3_resnet50'
-label_type = 'all-segmentation'
+label_type = 'merged-segmentation'
 num_classes = 4
 epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280

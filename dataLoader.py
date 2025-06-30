@@ -41,6 +41,9 @@ class MagClassDataset(Dataset):
         elif label_type=='all-segmentation':
             self.label_fields = ["archMask","agriMask","naturalMask","modernMask"]
             self.image_class = self.fh["class"]
+        elif label_type=='merged-segmentation':
+            print(self.fh.keys())
+            stop
             
         self.dataset_size = len(self.fh["images"])
         
