@@ -48,7 +48,7 @@ class MagClassDataset(Dataset):
                 print("calculating image class")
 
                 available_masks = []
-                for key in np.array(self.fh.keys()):
+                for key in self.fh.keys():
                     if key.endswith('mask'):
                         print(key)
                         available_masks.append(key)
