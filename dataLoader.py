@@ -69,7 +69,7 @@ class MagClassDataset(Dataset):
 
                 self.fh.create_dataset('class', data=image_class, compression="lzf", chunks=True, maxshape=(None,), dtype=h5py.string_dtype()) 
                 #self.fh['class'] = image_class
-            stop
+            #stop
             
         self.dataset_size = len(self.fh["images"])
         
