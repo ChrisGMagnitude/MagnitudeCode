@@ -45,15 +45,16 @@ class MagClassDataset(Dataset):
             self.label_fields = ["combinedMask","naturalMask"]
             print(np.array(self.fh.keys()))
             
+            available_masks = []
+            for key in self.fh.keys():
+                if key.endswith('Mask'):
+                    print(key)
+                    available_masks.append(key)
+
+            self.raw_label_fields = available_masks
+
             if not 'class' in np.array(self.fh.keys()):
                 print("calculating image class")
-
-                available_masks = []
-                for key in self.fh.keys():
-                    if key.endswith('Mask'):
-                        print(key)
-                        available_masks.append(key)
-
                 image_class = []
                 for i in range(len(self.fh[available_masks[0]])):
                     if i%1000==0:
@@ -61,10 +62,6 @@ class MagClassDataset(Dataset):
                     mask_sums = []
                     for m in available_masks:
                         mask_sums.append(sum(sum(self.fh[m][i])))
-
-                    #print(available_masks)
-                    #print(mask_sums)
-                    #print(np.argmin(mask_sums))
                     image_class.append(available_masks[np.argmin(mask_sums)])
 
                 print(len(image_class)) 
