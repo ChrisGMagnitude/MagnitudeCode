@@ -56,13 +56,15 @@ class MagClassDataset(Dataset):
 
                 image_class = []
                 for i in range(len(self.fh[available_masks[0]])):
+                    if i%1000==0:
+                        print(i)
                     mask_sums = []
                     for m in available_masks:
                         mask_sums.append(sum(sum(self.fh[m][i])))
 
-                    print(available_masks)
-                    print(mask_sums)
-                    print(np.argmin(mask_sums))
+                    #print(available_masks)
+                    #print(mask_sums)
+                    #print(np.argmin(mask_sums))
                     image_class.append(available_masks[np.argmin(mask_sums)])
 
             print(len(image_class)) 
