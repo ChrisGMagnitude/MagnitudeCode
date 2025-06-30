@@ -23,7 +23,7 @@ class MagClassDataset(Dataset):
                 on a sample.
         """
         self.hdf5_file = hdf5_file
-        self.fh = h5py.File(self.hdf5_file, "r")
+        self.fh = h5py.File(self.hdf5_file, "a")
         self.label_type = label_type
 
         if label_type=='binary':
@@ -68,7 +68,7 @@ class MagClassDataset(Dataset):
                 print(np.unique(image_class))     
 
                 self.fh.create_dataset('class', data=image_class, compression="lzf", chunks=True, maxshape=(None,1), dtype=h5py.string_dtype()) 
-                self.fh['class'] = image_class
+                #self.fh['class'] = image_class
             stop
             
         self.dataset_size = len(self.fh["images"])
