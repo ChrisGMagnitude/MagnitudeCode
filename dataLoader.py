@@ -49,7 +49,7 @@ class MagClassDataset(Dataset):
 
                 available_masks = []
                 for key in self.fh.keys():
-                    if key.endswith('mask'):
+                    if key.endswith('Mask'):
                         print(key)
                         available_masks.append(key)
             stop
