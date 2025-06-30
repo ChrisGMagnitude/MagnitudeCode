@@ -58,7 +58,7 @@ class MagClassDataset(Dataset):
                 for i in range(len(self.fh[available_masks[0]])):
                     mask_sums = []
                     for m in available_masks:
-                        mask_sums.append(sum(self.fh[m][i]))
+                        mask_sums.append(sum(sum(self.fh[m][i])))
 
                     print(available_masks)
                     print(mask_sums)
