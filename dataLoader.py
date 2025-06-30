@@ -44,6 +44,7 @@ class MagClassDataset(Dataset):
         elif label_type=='merged-segmentation':
             self.label_fields = ["combinedMask","naturalMask"]
             print(np.array(self.fh.keys()))
+            
             if not 'class' in np.array(self.fh.keys()):
                 print("calculating image class")
 
@@ -52,6 +53,16 @@ class MagClassDataset(Dataset):
                     if key.endswith('Mask'):
                         print(key)
                         available_masks.append(key)
+
+                image_class = []
+                for i in range(len(self.fh[available_masks[0]])):
+                    mask_sums = []
+                    for m in available_masks:
+                        mask_sums.append(sum(self.fh[m][i]))
+                    image_class.append(available_masks[np.argmin(mask_sums)])
+
+            print(len(image_class)) 
+            print(np.unique(image_class))      
             stop
             
         self.dataset_size = len(self.fh["images"])
