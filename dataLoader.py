@@ -67,10 +67,10 @@ class MagClassDataset(Dataset):
                     #print(np.argmin(mask_sums))
                     image_class.append(available_masks[np.argmin(mask_sums)])
 
-            print(len(image_class)) 
-            print(np.unique(image_class))     
+                print(len(image_class)) 
+                print(np.unique(image_class))     
 
-            self.fh['class'] = image_class
+                self.fh['class'] = image_class
             stop
             
         self.dataset_size = len(self.fh["images"])
