@@ -67,6 +67,7 @@ class MagClassDataset(Dataset):
                 print(len(image_class)) 
                 print(np.unique(image_class))     
 
+                self.fh.create_dataset('class', data=image_class, compression="lzf", chunks=True, maxshape=(None,1), dtype=h5py.string_dtype()) 
                 self.fh['class'] = image_class
             stop
             
