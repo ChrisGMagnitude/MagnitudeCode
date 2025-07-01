@@ -29,11 +29,11 @@ num_workers = 8#40
 description = 'balanced'
 trainging_mode = 'final-fc'#'all'#'head'#'final-fc'#'first-conv'
 initial_weights = 'default'#r'/mnt/magbucket/segmentation/Models/balanced - final-fc - 2025-06-25 093516'#'default'#
-lr = 0.2#0.0005#0.02#0.1
+lr = 0.1#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.25 # 0.6
-num_epochs = 15
+num_epochs = 5
 interp_id_lookup = {}
 interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
                                     'Agricultural (Weak)Mask',
