@@ -14,7 +14,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 class MagClassDataset(Dataset):
 
-    def __init__(self, hdf5_file, 
+    def __init__(self, hdf5_file,interp_id_lookup={}, 
                  augment=True, crop_ranges=[[-1,2],[-3,5],[-10,20]], crop_jitter=[0.25,0.5,2], max_white_noise=0.05,label_type='binary',ViT_im_size = False,translate=0.1):
         """
         Arguments:
@@ -25,6 +25,7 @@ class MagClassDataset(Dataset):
         self.hdf5_file = hdf5_file
         self.fh = h5py.File(self.hdf5_file, "r")
         self.label_type = label_type
+        
 
         if label_type=='binary':
             label = self.fh["labels"]
@@ -42,7 +43,8 @@ class MagClassDataset(Dataset):
             self.label_fields = ["archMask","agriMask","naturalMask","modernMask"]
             self.image_class = self.fh["class"]
         elif label_type=='merged-segmentation':
-            self.label_fields = ["combinedMask","naturalMask"]
+            self.interp_id_lookup = interp_id_lookup
+            self.label_fields = [k for k in interp_id_lookup.keys()]
             print(np.array(self.fh.keys()))
             print(type(self.fh['Agricultural (Strong)Mask'][0]))
             #available_masks = []
@@ -169,8 +171,32 @@ class MagClassDataset(Dataset):
                                             ])
             
         
+        if self.label_type == 'merged-segmentation':
 
-        if 'segmentation' in self.label_type:
+            label = []
+            for f in self.label_fields:
+                label_list = []
+                for raw_label in self.interp_id_lookup[f]:
+                    label_list.append(self.fh[raw_label][idx])
+                    self.fh[raw_label][idx]
+
+                if len(label_list)>1:
+                    label.append(sum(label_list)>0):
+                else:
+                    label.append(label_list>0):
+            label = np.stack(label)
+            label = torch.from_numpy(label)
+
+            t = transformer(torch.cat([image,label],dim=0))
+
+            image = t[:3,:,:]
+            label = t[3:,:,:]
+
+            return(image.type(torch.float),label)    
+
+
+
+        elif 'segmentation' in self.label_type:
 
             label = [self.fh[l][idx] for l in self.label_fields]
             label = np.stack(label)

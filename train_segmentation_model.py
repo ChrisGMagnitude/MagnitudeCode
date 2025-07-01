@@ -51,11 +51,11 @@ interp_id_lookup["modernMask"] = ['IndustrialModernMask']
 
 model_path = r'/mnt/magbucket/segmentation/Models'
 
-val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=False,label_type=label_type)
+val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=False,label_type=label_type,interp_id_lookup=interp_id_lookup)
 
 stop
 train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',augment=True,label_type=label_type,
-                               crop_jitter=[0.15,0.3,1.2], max_white_noise=0.001)
+                               crop_jitter=[0.15,0.3,1.2], max_white_noise=0.001,interp_id_lookup=interp_id_lookup)
 
 
 #train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)  
@@ -76,6 +76,7 @@ log['architecture'] = architecture
 log['label_type'] = label_type
 log['num_classes'] = num_classes
 log['hdf5_file'] = train_dataset.hdf5_file
+log['interp_id_lookup'] = interp_id_lookup
 log['trainging_mode'] = trainging_mode
 log['initial_weights'] = initial_weights
 log['crop_ranges'] = train_dataset.crop_ranges
@@ -91,6 +92,7 @@ log['momentum'] = momentum
 log['step_size'] = step_size
 log['gamma'] = gamma
 log['num_epochs'] = num_epochs
+
 
 os.mkdir(os.path.join(log['model_path'],log['name']))
 
