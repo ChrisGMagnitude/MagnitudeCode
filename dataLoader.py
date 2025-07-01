@@ -53,7 +53,7 @@ class MagClassDataset(Dataset):
 
             self.raw_label_fields = available_masks
 
-            if not 'class' in np.array(self.fh.keys()):
+            if not 'image_class' in np.array(self.fh.keys()):
                 print("calculating image class")
                 image_class = []
                 for i in range(len(self.fh[available_masks[0]])):
@@ -67,9 +67,8 @@ class MagClassDataset(Dataset):
                 print(len(image_class)) 
                 print(np.unique(image_class))     
 
-                self.fh.create_dataset('class', data=image_class, compression="lzf", chunks=True, maxshape=(None,), dtype=h5py.string_dtype()) 
-                #self.fh['class'] = image_class
-            #stop
+                self.fh.create_dataset('image_class', data=image_class, compression="lzf", chunks=True, maxshape=(None,), dtype=h5py.string_dtype()) 
+                
             
         self.dataset_size = len(self.fh["images"])
         
