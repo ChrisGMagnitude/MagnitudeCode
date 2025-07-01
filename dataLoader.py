@@ -45,32 +45,32 @@ class MagClassDataset(Dataset):
             self.label_fields = ["combinedMask","naturalMask"]
             print(np.array(self.fh.keys()))
             
-            available_masks = []
-            for key in self.fh.keys():
-                if key.endswith('Mask'):
-                    print(key)
-                    available_masks.append(key)
+            #available_masks = []
+            #for key in self.fh.keys():
+            #    if key.endswith('Mask'):
+            #        print(key)
+            #        available_masks.append(key)
 
-            self.raw_label_fields = available_masks
+            #self.raw_label_fields = available_masks
 
-            if not 'image_class' in np.array(self.fh.keys()):
-                print("calculating image class")
-                image_class = []
-                for i in range(len(self.fh[available_masks[0]])):
-                    if i%1000==0:
-                        print(i)
-                    mask_sums = []
-                    for m in available_masks:
-                        mask_sums.append(sum(sum(self.fh[m][i])))
-                    image_class.append(available_masks[np.argmin(mask_sums)])
+            #if not 'image_class' in np.array(self.fh.keys()):
+            #    print("calculating image class")
+            #    image_class = []
+            #    for i in range(len(self.fh[available_masks[0]])):
+            #        if i%1000==0:
+            #            print(i)
+            #        mask_sums = []
+            #        for m in available_masks:
+            #            mask_sums.append(sum(sum(self.fh[m][i])))
+            #        image_class.append(available_masks[np.argmin(mask_sums)])
 
-                self.fh.close()
-                print(len(image_class)) 
-                print(np.unique(image_class))     
-                with h5py.File(self.hdf5_file,'a') as f:
-                    f.create_dataset('image_class', data=image_class, compression="lzf", chunks=True, maxshape=(None,), dtype=h5py.string_dtype()) 
-                
-                self.fh = h5py.File(self.hdf5_file, "r")
+            #    self.fh.close()
+            #    print(len(image_class)) 
+            #    print(np.unique(image_class))     
+            #    with h5py.File(self.hdf5_file,'a') as f:
+            #        f.create_dataset('image_class', data=image_class, compression="lzf", chunks=True, maxshape=(None,), dtype=h5py.string_dtype()) 
+            #    
+            #    self.fh = h5py.File(self.hdf5_file, "r")
                 
             
         self.dataset_size = len(self.fh["images"])
