@@ -180,10 +180,8 @@ class MagClassDataset(Dataset):
                     label_list.append(self.fh[raw_label][idx])
                     self.fh[raw_label][idx]
 
-                if len(label_list)>1:
-                    label.append(sum(label_list)>0)
-                else:
-                    label.append(label_list>0)
+                label.append(sum(label_list)>0)
+                
             label = np.stack(label)
             label = torch.from_numpy(label)
 
