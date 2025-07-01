@@ -67,7 +67,7 @@ class MagClassDataset(Dataset):
                 self.fh.close()
                 print(len(image_class)) 
                 print(np.unique(image_class))     
-                with h5py.File(self.hdf5_file','a') as f:
+                with h5py.File(self.hdf5_file,'a') as f:
                     f.create_dataset('image_class', data=image_class, compression="lzf", chunks=True, maxshape=(None,), dtype=h5py.string_dtype()) 
                 
                 self.fh = h5py.File(self.hdf5_file, "r")
