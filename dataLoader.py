@@ -23,7 +23,7 @@ class MagClassDataset(Dataset):
                 on a sample.
         """
         self.hdf5_file = hdf5_file
-        self.fh = h5py.File(self.hdf5_file, "a")
+        self.fh = h5py.File(self.hdf5_file, "r")
         self.label_type = label_type
 
         if label_type=='binary':
@@ -64,10 +64,13 @@ class MagClassDataset(Dataset):
                         mask_sums.append(sum(sum(self.fh[m][i])))
                     image_class.append(available_masks[np.argmin(mask_sums)])
 
+                self.fh.close()
                 print(len(image_class)) 
                 print(np.unique(image_class))     
-
-                self.fh.create_dataset('image_class', data=image_class, compression="lzf", chunks=True, maxshape=(None,), dtype=h5py.string_dtype()) 
+                with h5py.File(hdf5_path+'/'+data_partition+'.hdf5','a') as f:
+                    f.create_dataset('image_class', data=image_class, compression="lzf", chunks=True, maxshape=(None,), dtype=h5py.string_dtype()) 
+                
+                self.fh = h5py.File(self.hdf5_file, "r")
                 
             
         self.dataset_size = len(self.fh["images"])
