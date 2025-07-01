@@ -44,7 +44,7 @@ class MagClassDataset(Dataset):
         elif label_type=='merged-segmentation':
             self.label_fields = ["combinedMask","naturalMask"]
             print(np.array(self.fh.keys()))
-            
+            print(type(self.fh['Agricultural (Strong)Mask'][0]))
             #available_masks = []
             #for key in self.fh.keys():
             #    if key.endswith('Mask'):
