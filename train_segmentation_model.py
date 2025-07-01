@@ -34,6 +34,19 @@ momentum = 0.9
 step_size = 10
 gamma = 0.25 # 0.6
 num_epochs = 15
+interp_id_lookup = {}
+interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
+                                    'Agricultural (Weak)Mask',
+                                    'Archaeology Possible (Strong)Mask',
+                                    'Archaeology Possible (Weak)Mask',
+                                    'Archaeology Probable (Strong)Mask',
+                                    'Archaeology Probable (Weak)Mask',
+                                    'Undetermined (Strong)Mask',
+                                    'Undetermined (Weak)Mask']
+interp_id_lookup["naturalMask"] = ['Natural (Strong)Mask',
+                                   'Natural (Weak)Mask']
+interp_id_lookup["modernMask"] = ['IndustrialModernMask']
+
 
 
 model_path = r'/mnt/magbucket/segmentation/Models'
