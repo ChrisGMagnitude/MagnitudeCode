@@ -35,7 +35,7 @@ momentum = 0.9
 step_size = 10
 gamma = 0.75 # 0.6
 weight_decay=0.003
-num_epochs = 20
+num_epochs = 10
 interp_id_lookup = {}
 interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
                                     'Agricultural (Weak)Mask',
