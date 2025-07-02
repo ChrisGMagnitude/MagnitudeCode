@@ -129,6 +129,13 @@ model = model.to(device)
 #
 #criterion = DiceLoss()
 
+class FocalLoss(nn.Module):
+    def forward(self, inputs, targets, smooth=1):
+        loss = sigmoid_focal_loss(inputs, targets)
+        return loss
+
+criterion = FocalLoss()
+
 criterion = sigmoid_focal_loss()
 
 # Choose parameters to optimise
