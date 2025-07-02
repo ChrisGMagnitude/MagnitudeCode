@@ -27,7 +27,7 @@ epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'overfittingFix-adam-focalLoss-dice'
+description = 'overfittingFix-adam-dice'
 trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
 initial_weights = r'/mnt/magbucket/segmentation/Models/balanced-overfittingFix-adam - all - 2025-07-02 143459'#'default'#
 initial_weights_file = 'last_model_params.pt'
@@ -120,21 +120,21 @@ model = model.to(device)
 
 #criterion = nn.BCEWithLogitsLoss()
 
-#class DiceLoss(nn.Module):
-#    def forward(self, inputs, targets, smooth=1):
-#        inputs = torch.sigmoid(inputs)
-#        intersection = (inputs * targets).sum()
-#        dice = (2.*intersection + smooth) / (inputs.sum() + targets.sum() + smooth)
-#        return 1 - dice
-#
-#criterion = DiceLoss()
-
-class FocalLoss(nn.Module):
+class DiceLoss(nn.Module):
     def forward(self, inputs, targets, smooth=1):
-        loss = sigmoid_focal_loss(inputs, targets)
-        return loss
+        inputs = torch.sigmoid(inputs)
+        intersection = (inputs * targets).sum()
+        dice = (2.*intersection + smooth) / (inputs.sum() + targets.sum() + smooth)
+        return 1 - dice
 
-criterion = FocalLoss()
+criterion = DiceLoss()
+
+#class FocalLoss(nn.Module):
+#    def forward(self, inputs, targets, smooth=1):
+#        loss = sigmoid_focal_loss(inputs, targets)
+#        return loss
+
+#criterion = FocalLoss()
 
 #criterion = sigmoid_focal_loss()
 
