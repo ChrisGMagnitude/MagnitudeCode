@@ -34,7 +34,7 @@ lr = 0.001#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.75 # 0.6
-weight_decay=0.02
+weight_decay=0.001
 num_epochs = 20
 interp_id_lookup = {}
 interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
@@ -56,7 +56,7 @@ model_path = r'/mnt/magbucket/segmentation/Models'
 val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=False,label_type=label_type,interp_id_lookup=interp_id_lookup)
 
 train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',augment=True,label_type=label_type,
-                               crop_jitter=[0.2,0.4,1.6], max_white_noise=0.0013,interp_id_lookup=interp_id_lookup)
+                               crop_jitter=[0.2,0.4,1.6], max_white_noise=0.001,interp_id_lookup=interp_id_lookup)
 
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)  
