@@ -136,7 +136,7 @@ class FocalLoss(nn.Module):
 
 criterion = FocalLoss()
 
-criterion = sigmoid_focal_loss()
+#criterion = sigmoid_focal_loss()
 
 # Choose parameters to optimise
 
