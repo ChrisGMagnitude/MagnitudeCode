@@ -7,6 +7,7 @@ import numpy as np
 import torchvision
 from torchvision import datasets, transforms
 import torchvision.models.segmentation as models
+from torchvision.ops import sigmoid_focal_loss
 import matplotlib.pyplot as plt
 import time
 from datetime import datetime
@@ -26,7 +27,7 @@ epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'balanced-overfittingFix-adam'
+description = 'balanced-overfittingFix-adam-focalLoss'
 trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
 initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
 initial_weights_file = '20_epoch_model_params.pt'
@@ -117,16 +118,18 @@ if initial_weights != 'default':
 
 model = model.to(device)
 
-criterion = nn.BCEWithLogitsLoss()
+#criterion = nn.BCEWithLogitsLoss()
 
-class DiceLoss(nn.Module):
-    def forward(self, inputs, targets, smooth=1):
-        inputs = torch.sigmoid(inputs)
-        intersection = (inputs * targets).sum()
-        dice = (2.*intersection + smooth) / (inputs.sum() + targets.sum() + smooth)
-        return 1 - dice
+#class DiceLoss(nn.Module):
+#    def forward(self, inputs, targets, smooth=1):
+#        inputs = torch.sigmoid(inputs)
+#        intersection = (inputs * targets).sum()
+#        dice = (2.*intersection + smooth) / (inputs.sum() + targets.sum() + smooth)
+#        return 1 - dice
+#
+#criterion = DiceLoss()
 
-criterion = DiceLoss()
+criterion = sigmoid_focal_loss()
 
 # Choose parameters to optimise
 
