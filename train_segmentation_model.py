@@ -28,12 +28,13 @@ batch_size = 40#32
 num_workers = 8#40
 description = 'balanced-overfittingFix'
 trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
-initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347/20_epoch_model_params.pt'#'default'#
+initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
+initial_weights_file = '20_epoch_model_params.pt'
 lr = 0.001#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.75 # 0.6
-weight_decay=1
+weight_decay=0.1
 num_epochs = 20
 interp_id_lookup = {}
 interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
@@ -79,6 +80,7 @@ log['hdf5_file'] = train_dataset.hdf5_file
 log['interp_id_lookup'] = interp_id_lookup
 log['trainging_mode'] = trainging_mode
 log['initial_weights'] = initial_weights
+log['initial_weights'] = initial_weights
 log['crop_ranges'] = train_dataset.crop_ranges
 log['crop_jitter'] = train_dataset.crop_jitter
 log['max_white_noise'] = train_dataset.max_white_noise
@@ -110,7 +112,7 @@ model.classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stri
 
 
 if initial_weights != 'default':
-    model.load_state_dict(torch.load(os.path.join(initial_weights), weights_only=True))
+    model.load_state_dict(torch.load(os.path.join(initial_weights,initial_weights_file), weights_only=True))
     model.eval()
 
 model = model.to(device)
