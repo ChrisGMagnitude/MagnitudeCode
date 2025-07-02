@@ -26,13 +26,14 @@ epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'balanced'
+description = 'balanced-overfittingFix'
 trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
-initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - head - 2025-07-01 141054'#'default'#
+initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - head - 2025-07-01 141054/20_epoch_model_params.pt'#'default'#
 lr = 0.001#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.75 # 0.6
+weight_decay=1
 num_epochs = 100
 interp_id_lookup = {}
 interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
@@ -54,7 +55,7 @@ model_path = r'/mnt/magbucket/segmentation/Models'
 val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=False,label_type=label_type,interp_id_lookup=interp_id_lookup)
 
 train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',augment=True,label_type=label_type,
-                               crop_jitter=[0.15,0.3,1.2], max_white_noise=0.001,interp_id_lookup=interp_id_lookup)
+                               crop_jitter=[0.2,0.4,1.6], max_white_noise=0.0013,interp_id_lookup=interp_id_lookup)
 
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)  
@@ -88,6 +89,7 @@ log['batch_size'] = batch_size
 log['num_workers'] = num_workers
 log['lr'] = lr
 log['momentum'] = momentum
+log['weight_decay'] = weight_decay
 log['step_size'] = step_size
 log['gamma'] = gamma
 log['num_epochs'] = num_epochs
@@ -108,7 +110,7 @@ model.classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stri
 
 
 if initial_weights != 'default':
-    model.load_state_dict(torch.load(os.path.join(initial_weights,'last_model_params.pt'), weights_only=True))
+    model.load_state_dict(torch.load(os.path.join(initial_weights), weights_only=True))
     model.eval()
 
 model = model.to(device)
@@ -128,16 +130,16 @@ criterion = DiceLoss()
 
 if trainging_mode=='head':
     print('head')
-    optimizer_ft = optim.SGD(model.classifier.parameters(), lr=lr, momentum=momentum)
+    optimizer_ft = optim.SGD(model.classifier.parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
 elif trainging_mode=='final-fc':
     print('final-fc')
-    optimizer_ft = optim.SGD(model.classifier[4].parameters(), lr=lr, momentum=momentum)
+    optimizer_ft = optim.SGD(model.classifier[4].parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay))
 elif trainging_mode=='all':
     print('all')
-    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum)
+    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay))
 elif trainging_mode=='first-conv':
     print('first-conv')
-    optimizer_ft = optim.SGD(model.features[0].parameters(), lr=lr, momentum=momentum)   
+    optimizer_ft = optim.SGD(model.features[0].parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay))   
     
 # Decay LR by a factor of gamma every step_size epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)

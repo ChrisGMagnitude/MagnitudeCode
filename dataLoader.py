@@ -15,7 +15,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 class MagClassDataset(Dataset):
 
     def __init__(self, hdf5_file,interp_id_lookup={}, 
-                 augment=True, crop_ranges=[[-1,2],[-3,5],[-10,20]], crop_jitter=[0.25,0.5,2], max_white_noise=0.05,label_type='binary',ViT_im_size = False,translate=0.1):
+                 augment=True, crop_ranges=[[-1,2],[-3,5],[-10,20]], crop_jitter=[0.25,0.5,2], max_white_noise=0.05,label_type='binary',ViT_im_size = False,translate=0.25):
         """
         Arguments:
             csv_file (string): Path to the HDF5 file.
