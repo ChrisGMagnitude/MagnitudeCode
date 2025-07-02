@@ -26,7 +26,7 @@ epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'balanced-overfittingFix'
+description = 'balanced-overfittingFix-adam'
 trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
 initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
 initial_weights_file = '20_epoch_model_params.pt'
@@ -34,7 +34,7 @@ lr = 0.001#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.75 # 0.6
-weight_decay=0.001
+weight_decay=0.003
 num_epochs = 20
 interp_id_lookup = {}
 interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
@@ -141,7 +141,7 @@ elif trainging_mode=='all':
     optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
 elif trainging_mode=='first-conv':
     print('first-conv')
-    optimizer_ft = optim.SGD(model.features[0].parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
+    optimizer_ft = optim.adam(model.features[0].parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
     
 # Decay LR by a factor of gamma every step_size epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
