@@ -113,7 +113,8 @@ num_classes = len(train_dataset.label_fields)
 #model.classifier.high_classifier = torch.nn.Conv2d(128, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
 model = models.fcn_resnet50(pretrained=True)
-print(model)
+model.classifier['4'] = torch.nn.Conv2d(512, num_classes, kernel_size=(1, 1), stride=(1, 1))
+model.aux_classifier['4'] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
 stop
 if initial_weights != 'default':
