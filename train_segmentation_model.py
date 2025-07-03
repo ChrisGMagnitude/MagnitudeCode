@@ -34,9 +34,9 @@ initial_weights_file = 'last_model_params.pt'#'default'#
 lr = 0.001#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
-gamma = 0.75 # 0.6
+gamma = 0.6 # 0.6
 weight_decay=0.003
-num_epochs = 5
+num_epochs = 50
 interp_id_lookup = {}
 interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
                                     'Agricultural (Weak)Mask',
