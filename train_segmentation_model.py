@@ -27,7 +27,7 @@ epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'lraspp'
+description = 'lraspp-noModern'
 trainging_mode = 'head'#'all'#'head'#'final-fc'#'first-conv'
 initial_weights = 'default'#r'/mnt/magbucket/segmentation/Models/lraspp - head - 2025-07-03 092117'#'default'#
 initial_weights_file = 'default'#'last_model_params.pt'#'default'#
@@ -48,7 +48,7 @@ interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
                                     'Undetermined (Weak)Mask']
 interp_id_lookup["naturalMask"] = ['Natural (Strong)Mask',
                                    'Natural (Weak)Mask']
-interp_id_lookup["modernMask"] = ['IndustrialModernMask']
+#interp_id_lookup["modernMask"] = ['IndustrialModernMask']
 
 
 
@@ -109,8 +109,6 @@ num_classes = len(train_dataset.label_fields)
 #model.classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
 model = models.lraspp_mobilenet_v3_large(pretrained=True)
-#print(model)
-#stop
 model.classifier.low_classifier = torch.nn.Conv2d(40, num_classes, kernel_size=(1, 1), stride=(1, 1))
 model.classifier.high_classifier = torch.nn.Conv2d(128, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
@@ -148,7 +146,7 @@ if trainging_mode=='head':
     optimizer_ft = optim.SGD(model.classifier.parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
 elif trainging_mode=='final-fc':
     print('final-fc')
-    optimizer_ft = optim.SGD(model.classifier[4].parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
+    optimizer_ft = optim.SGD([model.classifier.low_classifier.parameters(),model.classifier.high_classifier.parameters()], lr=lr, momentum=momentum,weight_decay=weight_decay)
 elif trainging_mode=='all':
     print('all')
     optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
