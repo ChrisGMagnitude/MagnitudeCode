@@ -131,7 +131,7 @@ model = model.to(device)
 
 class FocalLoss(nn.Module):
     def forward(self, inputs, targets):
-        loss = sigmoid_focal_loss(inputs, targets)
+        loss = sigmoid_focal_loss(inputs, targets,reduction='mean')
         return loss
 
 criterion = FocalLoss()
