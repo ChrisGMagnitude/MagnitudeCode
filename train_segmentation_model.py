@@ -116,7 +116,7 @@ model = models.fcn_resnet50(pretrained=True)
 model.classifier[4] = torch.nn.Conv2d(512, num_classes, kernel_size=(1, 1), stride=(1, 1))
 model.aux_classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
-stop
+
 if initial_weights != 'default':
     model.load_state_dict(torch.load(os.path.join(initial_weights,initial_weights_file), weights_only=True))
     model.eval()
@@ -147,7 +147,7 @@ criterion = DiceLoss()
 
 if trainging_mode=='head':
     print('head')
-    optimizer_ft = optim.SGD(model.classifier.parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
+    optimizer_ft = optim.SGD([model.classifier.parameters(),model.aux_classifier.parameters()], lr=lr, momentum=momentum,weight_decay=weight_decay)
 elif trainging_mode=='final-fc':
     print('final-fc')
     optimizer_ft = optim.SGD([model.classifier.low_classifier.parameters(),model.classifier.high_classifier.parameters()], lr=lr, momentum=momentum,weight_decay=weight_decay)
