@@ -28,7 +28,7 @@ epoch_size_val = 20*32*5#1280
 batch_size = 40#32
 num_workers = 8#40
 description = 'lraspp'
-trainging_mode = 'final-fc'#'all'#'head'#'final-fc'#'first-conv'
+trainging_mode = 'head'#'all'#'head'#'final-fc'#'first-conv'
 initial_weights = 'default'#r'/mnt/magbucket/segmentation/Models/balanced-overfittingFix-adam - all - 2025-07-02 143459'#'default'#
 initial_weights_file = 'default'#'last_model_params.pt'
 lr = 0.1#0.0005#0.02#0.1
@@ -111,7 +111,8 @@ num_classes = len(train_dataset.label_fields)
 model = models.lraspp_mobilenet_v3_large(pretrained=True)
 #print(model)
 #stop
-#model.classifier['high_classifier'] = torch.nn.Conv2d(128, num_classes, kernel_size=(1, 1), stride=(1, 1))
+model.classifier.low_classifier = torch.nn.Conv2d(40, num_classes, kernel_size=(1, 1), stride=(1, 1))
+model.classifier.high_classifier = torch.nn.Conv2d(128, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
 
 if initial_weights != 'default':
