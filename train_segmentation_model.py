@@ -20,18 +20,18 @@ from dataLoader import MagClassDataset, get_weighted_data_loader
 from train import train_model
 
 current_time = datetime.now()
-architecture = 'lraspp_mobilenet'
+architecture = 'FCN_resnet50'
 label_type = 'merged-segmentation'
 num_classes = 4
 epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'lraspp-noModern'
-trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
-initial_weights = r'/mnt/magbucket/segmentation/Models/lraspp-noModern - head - 2025-07-03 105410'#'default'#
-initial_weights_file = 'last_model_params.pt'#'default'#
-lr = 0.001#0.0005#0.02#0.1
+description = 'FCN-noModern'
+trainging_mode = 'head'#'all'#'head'#'final-fc'#'first-conv'
+initial_weights = 'default'#r'/mnt/magbucket/segmentation/Models/lraspp-noModern - head - 2025-07-03 105410'#'default'#
+initial_weights_file = 'default'#'last_model_params.pt'#'default'#
+lr = 0.02#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.6 # 0.6
