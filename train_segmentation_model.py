@@ -112,7 +112,7 @@ num_classes = len(train_dataset.label_fields)
 #model.classifier.low_classifier = torch.nn.Conv2d(40, num_classes, kernel_size=(1, 1), stride=(1, 1))
 #model.classifier.high_classifier = torch.nn.Conv2d(128, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
-model = models.fcn_resnet50
+model = models.fcn_resnet50(pretrained=True)
 print(model)
 
 stop
