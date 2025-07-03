@@ -147,7 +147,8 @@ criterion = DiceLoss()
 
 if trainging_mode=='head':
     print('head')
-    optimizer_ft = optim.SGD([model.classifier.parameters(),model.aux_classifier.parameters()], lr=lr, momentum=momentum,weight_decay=weight_decay)
+    params = list(model.classifier.parameters()) + list(model.aux_classifier.parameters())
+    optimizer_ft = optim.SGD(params, lr=lr, momentum=momentum,weight_decay=weight_decay)
 elif trainging_mode=='final-fc':
     print('final-fc')
     optimizer_ft = optim.SGD([model.classifier.low_classifier.parameters(),model.classifier.high_classifier.parameters()], lr=lr, momentum=momentum,weight_decay=weight_decay)
