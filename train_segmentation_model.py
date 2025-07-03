@@ -115,7 +115,7 @@ num_classes = len(train_dataset.label_fields)
 model = models.fcn_resnet50
 print(model)
 
-
+stop
 if initial_weights != 'default':
     model.load_state_dict(torch.load(os.path.join(initial_weights,initial_weights_file), weights_only=True))
     model.eval()
