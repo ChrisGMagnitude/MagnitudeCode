@@ -120,21 +120,21 @@ model = model.to(device)
 
 #criterion = nn.BCEWithLogitsLoss()
 
-class DiceLoss(nn.Module):
-    def forward(self, inputs, targets, smooth=1):
-        inputs = torch.sigmoid(inputs)
-        intersection = (inputs * targets).sum()
-        dice = (2.*intersection + smooth) / (inputs.sum() + targets.sum() + smooth)
-        return 1 - dice
-
-criterion = DiceLoss()
-
-#class FocalLoss(nn.Module):
+#class DiceLoss(nn.Module):
 #    def forward(self, inputs, targets, smooth=1):
-#        loss = sigmoid_focal_loss(inputs, targets)
-#        return loss
+#        inputs = torch.sigmoid(inputs)
+#        intersection = (inputs * targets).sum()
+#        dice = (2.*intersection + smooth) / (inputs.sum() + targets.sum() + smooth)
+#        return 1 - dice
 
-#criterion = FocalLoss()
+#criterion = DiceLoss()
+
+class FocalLoss(nn.Module):
+    def forward(self, inputs, targets):
+        loss = sigmoid_focal_loss(inputs, targets)
+        return loss
+
+criterion = FocalLoss()
 
 #criterion = sigmoid_focal_loss()
 
