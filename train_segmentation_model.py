@@ -103,16 +103,15 @@ os.mkdir(os.path.join(log['model_path'],log['name']))
 device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 print(f"Using {device} device")
 
-
-
-model = models.lraspp_mobilenet_v3_large(pretrained=True)
-
-# Adjust the classifier head for your number of classes, e.g., binary or multi-class segmentation
 num_classes = len(train_dataset.label_fields)
 
-print(model)
-stop
-model.classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stride=(1, 1))
+#model = models.deeplabv3_resnet50(pretrained=True)
+#model.classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stride=(1, 1))
+
+model = models.lraspp_mobilenet_v3_large(pretrained=True)
+#print(model)
+#stop
+model.classifier['high_classifier'] = torch.nn.Conv2d(128, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
 
 if initial_weights != 'default':
