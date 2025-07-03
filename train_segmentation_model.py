@@ -29,14 +29,14 @@ batch_size = 40#32
 num_workers = 8#40
 description = 'FCN-noModern'
 trainging_mode = 'head'#'all'#'head'#'final-fc'#'first-conv'
-initial_weights = 'default'#r'/mnt/magbucket/segmentation/Models/lraspp-noModern - head - 2025-07-03 105410'#'default'#
-initial_weights_file = 'default'#'last_model_params.pt'#'default'#
+initial_weights = r'/mnt/magbucket/segmentation/Models/FCN-noModern - head - 2025-07-03 154310'#'default'#
+initial_weights_file = 'last_model_params.pt'#'default'#
 lr = 0.02#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.6 # 0.6
 weight_decay=0.003
-num_epochs = 5
+num_epochs = 20
 interp_id_lookup = {}
 interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
                                     'Agricultural (Weak)Mask',
@@ -137,11 +137,9 @@ criterion = DiceLoss()
 #class FocalLoss(nn.Module):
 #    def forward(self, inputs, targets):
 #        loss = sigmoid_focal_loss(inputs, targets,reduction='mean')
-#        return 1 - loss
+#        return loss
 
 #criterion = FocalLoss()
-
-#criterion = sigmoid_focal_loss()
 
 # Choose parameters to optimise
 
