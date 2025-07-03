@@ -110,7 +110,7 @@ model = models.lraspp_mobilenet_v3_large(pretrained=True)
 # Adjust the classifier head for your number of classes, e.g., binary or multi-class segmentation
 num_classes = len(train_dataset.label_fields)
 
-print(model.classifier)
+print(model)
 stop
 model.classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
