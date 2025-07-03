@@ -20,23 +20,23 @@ from dataLoader import MagClassDataset, get_weighted_data_loader
 from train import train_model
 
 current_time = datetime.now()
-architecture = 'deeplabv3_resnet50'
+architecture = 'lraspp_mobilenet'
 label_type = 'merged-segmentation'
 num_classes = 4
 epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'overfittingFix-adam-focal'
-trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
-initial_weights = r'/mnt/magbucket/segmentation/Models/balanced-overfittingFix-adam - all - 2025-07-02 143459'#'default'#
-initial_weights_file = 'last_model_params.pt'
-lr = 0.001#0.0005#0.02#0.1
+description = 'lraspp'
+trainging_mode = 'final-fc'#'all'#'head'#'final-fc'#'first-conv'
+initial_weights = 'default'#r'/mnt/magbucket/segmentation/Models/balanced-overfittingFix-adam - all - 2025-07-02 143459'#'default'#
+initial_weights_file = 'default'#'last_model_params.pt'
+lr = 0.1#0.0005#0.02#0.1
 momentum = 0.9
 step_size = 10
 gamma = 0.75 # 0.6
 weight_decay=0.003
-num_epochs = 100
+num_epochs = 5
 interp_id_lookup = {}
 interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
                                     'Agricultural (Weak)Mask',
@@ -105,7 +105,7 @@ print(f"Using {device} device")
 
 
 
-model = models.deeplabv3_resnet50(pretrained=True)
+model = models.lraspp_mobilenet_v3_large(pretrained=True)
 
 # Adjust the classifier head for your number of classes, e.g., binary or multi-class segmentation
 num_classes = len(train_dataset.label_fields)
@@ -120,21 +120,21 @@ model = model.to(device)
 
 #criterion = nn.BCEWithLogitsLoss()
 
-#class DiceLoss(nn.Module):
-#    def forward(self, inputs, targets, smooth=1):
-#        inputs = torch.sigmoid(inputs)
-#        intersection = (inputs * targets).sum()
-#        dice = (2.*intersection + smooth) / (inputs.sum() + targets.sum() + smooth)
-#        return 1 - dice
+class DiceLoss(nn.Module):
+    def forward(self, inputs, targets, smooth=1):
+        inputs = torch.sigmoid(inputs)
+        intersection = (inputs * targets).sum()
+        dice = (2.*intersection + smooth) / (inputs.sum() + targets.sum() + smooth)
+        return 1 - dice
 
-#criterion = DiceLoss()
+criterion = DiceLoss()
 
-class FocalLoss(nn.Module):
-    def forward(self, inputs, targets):
-        loss = sigmoid_focal_loss(inputs, targets,reduction='mean')
-        return 1 - loss
+#class FocalLoss(nn.Module):
+#    def forward(self, inputs, targets):
+#        loss = sigmoid_focal_loss(inputs, targets,reduction='mean')
+#        return 1 - loss
 
-criterion = FocalLoss()
+#criterion = FocalLoss()
 
 #criterion = sigmoid_focal_loss()
 
