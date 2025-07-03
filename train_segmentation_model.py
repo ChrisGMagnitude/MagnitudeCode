@@ -111,7 +111,7 @@ num_classes = len(train_dataset.label_fields)
 model = models.lraspp_mobilenet_v3_large(pretrained=True)
 #print(model)
 #stop
-model.classifier['high_classifier'] = torch.nn.Conv2d(128, num_classes, kernel_size=(1, 1), stride=(1, 1))
+#model.classifier['high_classifier'] = torch.nn.Conv2d(128, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
 
 if initial_weights != 'default':
