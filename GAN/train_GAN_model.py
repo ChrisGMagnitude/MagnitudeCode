@@ -123,39 +123,69 @@ if initial_weights != 'default':
 
 model = model.to(device)
 
-#criterion = nn.BCEWithLogitsLoss()
+#GAN Discriminator
 
-class DiceLoss(nn.Module):
-    def forward(self, inputs, targets, smooth=1):
-        inputs = torch.sigmoid(inputs)
-        intersection = (inputs * targets).sum()
-        dice = (2.*intersection + smooth) / (inputs.sum() + targets.sum() + smooth)
-        return 1 - dice
+nc = 3
+ndf = 64
 
-criterion = DiceLoss()
+class Discriminator(nn.Module):
+    def __init__(self):
+        super(Discriminator, self).__init__()
+        self.main = nn.Sequential(
+            # input is ``(nc) x 64 x 64``
+            nn.Conv2d(nc, ndf, 4, 2, 1, bias=False),
+            nn.LeakyReLU(0.2, inplace=True),
+            # state size. ``(ndf) x 32 x 32``
+            nn.Conv2d(ndf, ndf * 2, 4, 2, 1, bias=False),
+            nn.BatchNorm2d(ndf * 2),
+            nn.LeakyReLU(0.2, inplace=True),
+            # state size. ``(ndf*2) x 16 x 16``
+            nn.Conv2d(ndf * 2, ndf * 4, 4, 2, 1, bias=False),
+            nn.BatchNorm2d(ndf * 4),
+            nn.LeakyReLU(0.2, inplace=True),
+            # state size. ``(ndf*4) x 8 x 8``
+            nn.Conv2d(ndf * 4, ndf * 8, 4, 2, 1, bias=False),
+            nn.BatchNorm2d(ndf * 8),
+            nn.LeakyReLU(0.2, inplace=True),
+            # state size. ``(ndf*8) x 4 x 4``
+            nn.Conv2d(ndf * 8, 1, 4, 1, 0, bias=False),
+            nn.Sigmoid()
+        )
 
-#class FocalLoss(nn.Module):
-#    def forward(self, inputs, targets):
-#        loss = sigmoid_focal_loss(inputs, targets,reduction='mean')
-#        return loss
+    def forward(self, input):
+        return self.main(input)
 
-#criterion = FocalLoss()
+netD = Discriminator().to(device)
+
+criterion = nn.BCELoss()
+
+# Establish convention for real and fake labels during training
+real_label = 1.
+fake_label = 0.
+
+beta1 = 0.5
+
+# Setup Adam optimizers for both G and D
+optimizerD = optim.Adam(netD.parameters(), lr=lr, betas=(beta1, 0.999))
+optimizerG = optim.Adam(model.parameters(), lr=lr, betas=(beta1, 0.999))
 
 # Choose parameters to optimise
 
-if trainging_mode=='head':
-    print('head')
-    params = list(model.classifier.parameters()) + list(model.aux_classifier.parameters())
-    optimizer_ft = optim.SGD(params, lr=lr, momentum=momentum,weight_decay=weight_decay)
-elif trainging_mode=='final-fc':
-    print('final-fc')
-    optimizer_ft = optim.SGD([model.classifier.low_classifier.parameters(),model.classifier.high_classifier.parameters()], lr=lr, momentum=momentum,weight_decay=weight_decay)
-elif trainging_mode=='all':
-    print('all')
-    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
-elif trainging_mode=='first-conv':
-    print('first-conv')
-    optimizer_ft = optim.adam(model.features[0].parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
+#if trainging_mode=='head':
+#    print('head')
+#    params = list(model.classifier.parameters()) + list(model.aux_classifier.parameters())
+#    optimizer_ft = optim.SGD(params, lr=lr, momentum=momentum,weight_decay=weight_decay)
+#elif trainging_mode=='final-fc':
+#    print('final-fc')
+#    optimizer_ft = optim.SGD([model.classifier.low_classifier.parameters(),model.classifier.high_classifier.parameters()], lr=lr, momentum=momentum,weight_decay=weight_decay)
+#elif trainging_mode=='all':
+#    print('all')
+#    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
+#elif trainging_mode=='first-conv':
+#    print('first-conv')
+#    optimizer_ft = optim.adam(model.features[0].parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
+    
+
     
 # Decay LR by a factor of gamma every step_size epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
