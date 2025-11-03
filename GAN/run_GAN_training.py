@@ -51,7 +51,7 @@ interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
                                     'Undetermined (Weak)Mask']
 interp_id_lookup["naturalMask"] = ['Natural (Strong)Mask',
                                    'Natural (Weak)Mask']
-#interp_id_lookup["modernMask"] = ['IndustrialModernMask']
+interp_id_lookup["modernMask"] = ['IndustrialModernMask']
 
 
 
