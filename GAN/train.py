@@ -48,7 +48,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 labels = labels.type(torch.float)
                 inputs = inputs.to(device)
                 labels = labels.to(device)
-                combined = torch.stack((inputs, labels), dim=1).to(device)
+                combined = torch.cat((inputs, labels), dim=1).to(device)
                 
                 ############################
                 # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
@@ -71,7 +71,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Generate fake image batch with G
                 fake_segmentartion = model(inputs)['out']
                 seg_labels_out = fake_segmentartion>0
-                fake_combined = torch.stack((inputs, seg_labels_out), dim=1).to(device)
+                fake_combined = torch.cat((inputs, seg_labels_out), dim=1).to(device)
                 # Classify all fake batch with D
                 output = netD(fake_combined.detach()).view(-1)
                 # Calculate D's loss on the all-fake batch
@@ -105,7 +105,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 with torch.set_grad_enabled(phase == 'train'):
                     outputs = model(inputs)['out']
                     seg_labels_out = outputs>0
-                    fake_combined = torch.stack((inputs, seg_labels_out), dim=1).to(device)
+                    fake_combined = torch.cat((inputs, seg_labels_out), dim=1).to(device)
                     
                     output = netD(fake_combined).view(-1)
                     
