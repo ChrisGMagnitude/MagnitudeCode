@@ -27,8 +27,8 @@ epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'FCN-noModern'
-trainging_mode = 'all'#'all'#'head'#'final-fc'#'first-conv'
+description = 'FCN-noModern-GAN'
+trainging_mode = 'all'#'generator'#'discriminator'
 initial_weights = r'/mnt/magbucket/segmentation/Models/FCN-noModern - head - 2025-07-03 162852'#'default'#
 initial_weights_file = 'last_model_params.pt'#'default'#
 lr = 0.001#0.0005#0.02#0.1
@@ -80,7 +80,6 @@ log['num_classes'] = num_classes
 log['hdf5_file'] = train_dataset.hdf5_file
 log['interp_id_lookup'] = interp_id_lookup
 log['trainging_mode'] = trainging_mode
-log['initial_weights'] = initial_weights
 log['initial_weights'] = initial_weights
 log['crop_ranges'] = train_dataset.crop_ranges
 log['crop_jitter'] = train_dataset.crop_jitter
@@ -188,10 +187,12 @@ optimizerG = optim.Adam(model.parameters(), lr=lr, betas=(beta1, 0.999))
 
     
 # Decay LR by a factor of gamma every step_size epochs
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
+#exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
 
-model, log = train_model(model, criterion, optimizer_ft, exp_lr_scheduler,
-                          device, dataloaders, log, num_epochs=num_epochs)
+model, log = train_model(model, netD, optimizerG, optimizerD, criterion,
+                        device, dataloaders, log, num_epochs=25)
+                         #optimizer_ft, exp_lr_scheduler,
+                         #device, dataloaders, log, num_epochs=num_epochs)
 
 for k in log.keys():
     print(k,log[k],type(log[k]))
