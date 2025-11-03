@@ -29,9 +29,12 @@ batch_size = 40#32
 num_workers = 8#40
 description = 'FCN-noModern-GAN'
 trainging_mode = 'all'#'generator'#'discriminator'
-initial_weights = r'/mnt/magbucket/segmentation/Models/FCN-noModern - head - 2025-07-03 162852'#'default'#
+initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
 initial_weights_file = 'last_model_params.pt'#'default'#
-lr = 0.001#0.0005#0.02#0.1
+initial_weights_d = r'default'#'default'#
+initial_weights_file_d = ''
+lr_g = 0.0002
+lr_d = 0.0002
 momentum = 0.9
 step_size = 10
 gamma = 0.6 # 0.6
@@ -81,6 +84,7 @@ log['hdf5_file'] = train_dataset.hdf5_file
 log['interp_id_lookup'] = interp_id_lookup
 log['trainging_mode'] = trainging_mode
 log['initial_weights'] = initial_weights
+log['initial_weights_d'] = initial_weights_d
 log['crop_ranges'] = train_dataset.crop_ranges
 log['crop_jitter'] = train_dataset.crop_jitter
 log['max_white_noise'] = train_dataset.max_white_noise
@@ -89,7 +93,8 @@ log['epoch_size_train'] = epoch_size_train
 log['epoch_size_val'] = epoch_size_val
 log['batch_size'] = batch_size
 log['num_workers'] = num_workers
-log['lr'] = lr
+log['lr_d'] = lr_d
+log['lr_g'] = lr_g
 log['momentum'] = momentum
 log['weight_decay'] = weight_decay
 log['step_size'] = step_size
@@ -121,6 +126,8 @@ if initial_weights != 'default':
     model.eval()
 
 model = model.to(device)
+
+
 
 #GAN Discriminator
 
@@ -154,7 +161,14 @@ class Discriminator(nn.Module):
     def forward(self, input):
         return self.main(input)
 
-netD = Discriminator().to(device)
+netD = Discriminator()
+
+if initial_weights_d != 'default':
+    netD.load_state_dict(torch.load(os.path.join(initial_weights_d,initial_weights_file_d), weights_only=True))
+    netD.eval()
+
+netD = netD.to(device)
+
 
 criterion = nn.BCELoss()
 
@@ -165,8 +179,8 @@ fake_label = 0.
 beta1 = 0.5
 
 # Setup Adam optimizers for both G and D
-optimizerD = optim.Adam(netD.parameters(), lr=lr, betas=(beta1, 0.999))
-optimizerG = optim.Adam(model.parameters(), lr=lr, betas=(beta1, 0.999))
+optimizerD = optim.Adam(netD.parameters(), lr=lr_g, betas=(beta1, 0.999))
+optimizerG = optim.Adam(model.parameters(), lr=lr_d, betas=(beta1, 0.999))
 
 # Choose parameters to optimise
 
