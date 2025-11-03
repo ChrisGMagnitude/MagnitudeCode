@@ -120,6 +120,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     train_loss_g.append(errG)
                 else:
                     val_loss_g.append(errG)
+                    
+                print('train_loss_g.device',train_loss_g.device)
                 
                 
             if phase == 'train':
