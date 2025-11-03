@@ -27,7 +27,7 @@ epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 40#32
 num_workers = 8#40
-description = 'FCN-noModern-GAN'
+description = 'deeplabv3_resnet50-GAN'
 trainging_mode = 'all'#'generator'#'discriminator'
 initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
 initial_weights_file = 'last_model_params.pt'#'default'#
@@ -116,7 +116,7 @@ num_classes = len(train_dataset.label_fields)
 #model.classifier.low_classifier = torch.nn.Conv2d(40, num_classes, kernel_size=(1, 1), stride=(1, 1))
 #model.classifier.high_classifier = torch.nn.Conv2d(128, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
-model = models.fcn_resnet50(pretrained=True)
+model = models.deeplabv3_resnet50(pretrained=True)
 model.classifier[4] = torch.nn.Conv2d(512, num_classes, kernel_size=(1, 1), stride=(1, 1))
 model.aux_classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stride=(1, 1))
 
