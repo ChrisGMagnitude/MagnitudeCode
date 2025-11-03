@@ -59,6 +59,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 b_size = combined.size(0)
                 label = torch.full((b_size,), real_label, dtype=torch.float, device=device)
                 # Forward pass real batch through D
+                print('combined.shape',combined.shape)
                 output = netD(combined).view(-1)
                 # Calculate loss on all-real batch
                 print('output.shape',output.shape)
