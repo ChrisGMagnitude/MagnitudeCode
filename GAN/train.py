@@ -61,6 +61,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Forward pass real batch through D
                 output = netD(combined).view(-1)
                 # Calculate loss on all-real batch
+                print('output.shape',output.shape)
+                print('label.shape',label.shape)
                 errD_real = criterion(output, label)
                 # Calculate gradients for D in backward pass
                 if phase == 'train':
