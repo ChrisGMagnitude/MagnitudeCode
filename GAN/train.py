@@ -47,7 +47,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
                 labels = labels.type(torch.float)
                 inputs = inputs.to(device)
-                #labels = labels.to(device)
+                labels = labels.to(device)
                 combined = torch.cat((inputs, labels), dim=1).to(device)
                 
                 ############################
