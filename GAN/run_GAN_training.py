@@ -107,7 +107,7 @@ os.mkdir(os.path.join(log['model_path'],log['name']))
 device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
 print(f"Using {device} device")
 
-num_classes = len(train_dataset.label_fields)
+num_classes = 3#len(train_dataset.label_fields)
 
 model = models.deeplabv3_resnet50(pretrained=True)
 model.classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stride=(1, 1))
