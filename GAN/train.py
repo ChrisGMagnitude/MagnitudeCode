@@ -59,11 +59,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 b_size = combined.size(0)
                 label = torch.full((b_size,), real_label, dtype=torch.float, device=device)
                 # Forward pass real batch through D
-                print('combined.shape',combined.shape)
                 output = netD(combined).view(-1)
                 # Calculate loss on all-real batch
-                print('output.shape',output.shape)
-                print('label.shape',label.shape)
                 errD_real = criterion(output, label)
                 # Calculate gradients for D in backward pass
                 if phase == 'train':
@@ -76,7 +73,6 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 seg_labels_out = fake_segmentartion>0
                 fake_combined = torch.cat((inputs, seg_labels_out), dim=1).to(device)
                 # Classify all fake batch with D
-                print('fake_combined.shape',combined.shape)
                 output = netD(fake_combined.detach()).view(-1)
                 # Calculate D's loss on the all-fake batch
                 label.fill_(fake_label)
