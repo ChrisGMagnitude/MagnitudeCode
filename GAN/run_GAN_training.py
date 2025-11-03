@@ -130,7 +130,7 @@ model = model.to(device)
 
 #GAN Discriminator
 
-nc = 5
+nc = 6
 ndf = 64
 
 class Discriminator(nn.Module):
