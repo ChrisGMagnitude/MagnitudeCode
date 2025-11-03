@@ -76,6 +76,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 seg_labels_out = fake_segmentartion>0
                 fake_combined = torch.cat((inputs, seg_labels_out), dim=1).to(device)
                 # Classify all fake batch with D
+                print('fake_combined.shape',fake_combined.shape)
                 output = netD(fake_combined.detach()).view(-1)
                 # Calculate D's loss on the all-fake batch
                 label.fill_(fake_label)
