@@ -123,8 +123,27 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 print('Before running model')
                 print(f'Reserved {r/1000000} / {t/1000000}')
                 print(f'Allocated {a/1000000} / {t/1000000}')
+                
                 fake_segmentartion = model(inputs)['out']
+                
+                t = torch.cuda.get_device_properties(0).total_memory
+                r = torch.cuda.memory_reserved(0)
+                a = torch.cuda.memory_allocated(0)
+                f = r-a
+                print('After running model')
+                print(f'Reserved {r/1000000} / {t/1000000}')
+                print(f'Allocated {a/1000000} / {t/1000000}')
+
+                
                 seg_labels_out = fake_segmentartion>0
+                
+                t = torch.cuda.get_device_properties(0).total_memory
+                r = torch.cuda.memory_reserved(0)
+                a = torch.cuda.memory_allocated(0)
+                f = r-a
+                print('After thresholding result')
+                print(f'Reserved {r/1000000} / {t/1000000}')
+                print(f'Allocated {a/1000000} / {t/1000000}')
                 
                 t = torch.cuda.get_device_properties(0).total_memory
                 r = torch.cuda.memory_reserved(0)
