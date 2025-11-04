@@ -18,6 +18,7 @@ from tempfile import TemporaryDirectory
 import tqdm
 from dataLoader import MagClassDataset, get_weighted_data_loader
 from train import train_model
+from pynvml import *
 
 current_time = datetime.now()
 architecture = 'FCN_resnet50'
@@ -101,6 +102,13 @@ log['step_size'] = step_size
 log['gamma'] = gamma
 log['num_epochs'] = num_epochs
 
+t = torch.cuda.get_device_properties(0).total_memory
+r = torch.cuda.memory_reserved(0)
+a = torch.cuda.memory_allocated(0)
+f = r-a
+print('Before Loading Model')
+print(f'In use {a} / {r}')
+print(f'Free {f}')
 
 os.mkdir(os.path.join(log['model_path'],log['name']))
 
@@ -126,7 +134,13 @@ if initial_weights != 'default':
 
 model = model.to(device)
 
-
+t = torch.cuda.get_device_properties(0).total_memory
+r = torch.cuda.memory_reserved(0)
+a = torch.cuda.memory_allocated(0)
+f = r-a
+print('After morving Model to device')
+print(f'In use {a} / {r}')
+print(f'Free {f}')
 
 #GAN Discriminator
 
@@ -170,6 +184,13 @@ if initial_weights_d != 'default':
 
 netD = netD.to(device)
 
+t = torch.cuda.get_device_properties(0).total_memory
+r = torch.cuda.memory_reserved(0)
+a = torch.cuda.memory_allocated(0)
+f = r-a
+print('After morving Discriminator Model to device')
+print(f'In use {a} / {r}')
+print(f'Free {f}')
 
 criterion = nn.BCELoss()
 

@@ -16,6 +16,7 @@ import json
 from PIL import Image
 from tempfile import TemporaryDirectory
 import tqdm
+from pynvml import *
 
 def train_model(model, netD, optimizerG, optimizerD, criterion,
                 device, dataloaders, log, num_epochs=25,
@@ -28,6 +29,14 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
     val_loss_g_epoch = []
     train_loss_d_epoch = []
     val_loss_d_epoch = []
+    
+    t = torch.cuda.get_device_properties(0).total_memory
+    r = torch.cuda.memory_reserved(0)
+    a = torch.cuda.memory_allocated(0)
+    f = r-a
+    print('Start of training loop')
+    print(f'In use {a} / {r}')
+    print(f'Free {f}')
     
     for epoch in range(num_epochs):
         print(f'Epoch {epoch}/{num_epochs - 1}')
