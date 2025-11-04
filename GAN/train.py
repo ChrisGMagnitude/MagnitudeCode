@@ -124,7 +124,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 print(f'Reserved {r/1000000} / {t/1000000}')
                 print(f'Allocated {a/1000000} / {t/1000000}')
                 
-                fake_segmentartion = model(inputs)['out']
+                fake_segmentartion = model(inputs)['out'].detach()
                 
                 t = torch.cuda.get_device_properties(0).total_memory
                 r = torch.cuda.memory_reserved(0)
@@ -194,7 +194,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
-                    outputs = model(inputs)['out']
+                    outputs = model(inputs)['out'].detach()
                     seg_labels_out = outputs>0
                     fake_combined = torch.cat((inputs, seg_labels_out), dim=1)#.to(device)
                     
