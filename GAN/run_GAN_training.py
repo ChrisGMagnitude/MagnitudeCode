@@ -139,8 +139,8 @@ r = torch.cuda.memory_reserved(0)
 a = torch.cuda.memory_allocated(0)
 f = r-a
 print('After morving Model to device')
-print(f'In use {a} / {r}')
-print(f'Free {f}')
+print(f'In use {a/1000} / {r/1000}')
+print(f'Free {f/1000}')
 
 #GAN Discriminator
 
@@ -189,8 +189,8 @@ r = torch.cuda.memory_reserved(0)
 a = torch.cuda.memory_allocated(0)
 f = r-a
 print('After morving Discriminator Model to device')
-print(f'In use {a} / {r}')
-print(f'Free {f}')
+print(f'In use {a/1000} / {r/1000}')
+print(f'Free {f/1000}')
 
 criterion = nn.BCELoss()
 

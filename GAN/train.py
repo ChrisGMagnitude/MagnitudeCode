@@ -30,17 +30,20 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
     train_loss_d_epoch = []
     val_loss_d_epoch = []
     
-    t = torch.cuda.get_device_properties(0).total_memory
-    r = torch.cuda.memory_reserved(0)
-    a = torch.cuda.memory_allocated(0)
-    f = r-a
-    print('Start of training loop')
-    print(f'In use {a} / {r}')
-    print(f'Free {f}')
+    
     
     for epoch in range(num_epochs):
         print(f'Epoch {epoch}/{num_epochs - 1}')
         print('-' * 10)
+        
+        t = torch.cuda.get_device_properties(0).total_memory
+        r = torch.cuda.memory_reserved(0)
+        a = torch.cuda.memory_allocated(0)
+        f = r-a
+        print('Start of training epoch')
+        print(f'In use {a/1000} / {r/1000}')
+        print(f'Free {f/1000}')
+        
         # Each epoch has a training and validation phase
         for phase in ['train', 'val']:
             if phase == 'train':
@@ -54,10 +57,27 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             val_loss_d = []
             # Iterate over data.
             for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
+                t = torch.cuda.get_device_properties(0).total_memory
+                r = torch.cuda.memory_reserved(0)
+                a = torch.cuda.memory_allocated(0)
+                f = r-a
+                print('Before moving batch data to device')
+                print(f'In use {a/1000} / {r/1000}')
+                print(f'Free {f/1000}')
+                
+                
                 labels = labels.type(torch.float)
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 combined = torch.cat((inputs, labels), dim=1).to(device)
+                
+                t = torch.cuda.get_device_properties(0).total_memory
+                r = torch.cuda.memory_reserved(0)
+                a = torch.cuda.memory_allocated(0)
+                f = r-a
+                print('After moving batch data to device')
+                print(f'In use {a/1000} / {r/1000}')
+                print(f'Free {f/1000}')
                 
                 ############################
                 # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
