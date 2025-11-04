@@ -109,6 +109,15 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Generate fake image batch with G
                 fake_segmentartion = model(inputs)['out']
                 seg_labels_out = fake_segmentartion>0
+                
+                t = torch.cuda.get_device_properties(0).total_memory
+                r = torch.cuda.memory_reserved(0)
+                a = torch.cuda.memory_allocated(0)
+                f = r-a
+                print('Before moving generated data to device for dicriminator training')
+                print(f'Reserved {r/1000000} / {t/1000000}')
+                print(f'Allocated {a/1000000} / {t/1000000}')
+                
                 fake_combined = torch.cat((inputs, seg_labels_out), dim=1)#.to(device)
                 
                 t = torch.cuda.get_device_properties(0).total_memory
