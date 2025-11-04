@@ -107,8 +107,8 @@ r = torch.cuda.memory_reserved(0)
 a = torch.cuda.memory_allocated(0)
 f = r-a
 print('Before Loading Model')
-print(f'In use {a} / {r}')
-print(f'Free {f}')
+print(f'Reserved {a/1000000} / {t/1000000}')
+print(f'Allocated {a/1000000} / {t/1000000}')
 
 os.mkdir(os.path.join(log['model_path'],log['name']))
 
@@ -139,8 +139,9 @@ r = torch.cuda.memory_reserved(0)
 a = torch.cuda.memory_allocated(0)
 f = r-a
 print('After morving Model to device')
-print(f'In use {a/1000} / {r/1000}')
-print(f'Free {f/1000}')
+print(f'Reserved {a/1000000} / {t/1000000}')
+print(f'Allocated {a/1000000} / {t/1000000}')
+
 
 #GAN Discriminator
 
@@ -189,8 +190,8 @@ r = torch.cuda.memory_reserved(0)
 a = torch.cuda.memory_allocated(0)
 f = r-a
 print('After morving Discriminator Model to device')
-print(f'In use {a/1000} / {r/1000}')
-print(f'Free {f/1000}')
+print(f'Reserved {a/1000000} / {t/1000000}')
+print(f'Allocated {a/1000000} / {t/1000000}')
 
 criterion = nn.BCELoss()
 
