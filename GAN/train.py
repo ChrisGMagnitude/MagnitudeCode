@@ -98,6 +98,15 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 # Forward pass real batch through D
                 output = netD(combined).view(-1)
+                
+                t = torch.cuda.get_device_properties(0).total_memory
+                r = torch.cuda.memory_reserved(0)
+                a = torch.cuda.memory_allocated(0)
+                f = r-a
+                print('After running D on real batch')
+                print(f'Reserved {r/1000000} / {t/1000000}')
+                print(f'Allocated {a/1000000} / {t/1000000}')
+                
                 # Calculate loss on all-real batch
                 errD_real = criterion(output, label)
                 # Calculate gradients for D in backward pass
@@ -107,6 +116,13 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 D_x = output.mean().item()
                 ## Train with all-fake batch
                 # Generate fake image batch with G
+                t = torch.cuda.get_device_properties(0).total_memory
+                r = torch.cuda.memory_reserved(0)
+                a = torch.cuda.memory_allocated(0)
+                f = r-a
+                print('Before running model')
+                print(f'Reserved {r/1000000} / {t/1000000}')
+                print(f'Allocated {a/1000000} / {t/1000000}')
                 fake_segmentartion = model(inputs)['out']
                 seg_labels_out = fake_segmentartion>0
                 
