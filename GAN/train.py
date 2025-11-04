@@ -109,7 +109,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Generate fake image batch with G
                 fake_segmentartion = model(inputs)['out']
                 seg_labels_out = fake_segmentartion>0
-                fake_combined = torch.cat((inputs, seg_labels_out), dim=1).to(device)
+                fake_combined = torch.cat((inputs, seg_labels_out), dim=1)#.to(device)
                 
                 t = torch.cuda.get_device_properties(0).total_memory
                 r = torch.cuda.memory_reserved(0)
@@ -152,7 +152,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 with torch.set_grad_enabled(phase == 'train'):
                     outputs = model(inputs)['out']
                     seg_labels_out = outputs>0
-                    fake_combined = torch.cat((inputs, seg_labels_out), dim=1).to(device)
+                    fake_combined = torch.cat((inputs, seg_labels_out), dim=1)#.to(device)
                     
                     t = torch.cuda.get_device_properties(0).total_memory
                     r = torch.cuda.memory_reserved(0)
