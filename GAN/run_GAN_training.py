@@ -26,7 +26,7 @@ label_type = 'merged-segmentation'
 num_classes = 4
 epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
-batch_size = 16#32
+batch_size = 32#32
 num_workers = 8#40
 description = 'deeplabv3_resnet50-GAN'
 trainging_mode = 'discriminator'#'all'#'generator'#'discriminator'
@@ -107,7 +107,7 @@ r = torch.cuda.memory_reserved(0)
 a = torch.cuda.memory_allocated(0)
 f = r-a
 print('Before Loading Model')
-print(f'Reserved {a/1000000} / {t/1000000}')
+print(f'Reserved {r/1000000} / {t/1000000}')
 print(f'Allocated {a/1000000} / {t/1000000}')
 
 os.mkdir(os.path.join(log['model_path'],log['name']))
@@ -139,7 +139,7 @@ r = torch.cuda.memory_reserved(0)
 a = torch.cuda.memory_allocated(0)
 f = r-a
 print('After morving Model to device')
-print(f'Reserved {a/1000000} / {t/1000000}')
+print(f'Reserved {r/1000000} / {t/1000000}')
 print(f'Allocated {a/1000000} / {t/1000000}')
 
 
@@ -190,7 +190,7 @@ r = torch.cuda.memory_reserved(0)
 a = torch.cuda.memory_allocated(0)
 f = r-a
 print('After morving Discriminator Model to device')
-print(f'Reserved {a/1000000} / {t/1000000}')
+print(f'Reserved {r/1000000} / {t/1000000}')
 print(f'Allocated {a/1000000} / {t/1000000}')
 
 criterion = nn.BCELoss()

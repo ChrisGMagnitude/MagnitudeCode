@@ -41,7 +41,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
         a = torch.cuda.memory_allocated(0)
         f = r-a
         print('Start of training epoch')
-        print(f'Reserved {a/1000000} / {t/1000000}')
+        print(f'Reserved {r/1000000} / {t/1000000}')
         print(f'Allocated {a/1000000} / {t/1000000}')
         
         # Each epoch has a training and validation phase
@@ -62,7 +62,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 a = torch.cuda.memory_allocated(0)
                 f = r-a
                 print('Before moving batch data to device')
-                print(f'Reserved {a/1000000} / {t/1000000}')
+                print(f'Reserved {r/1000000} / {t/1000000}')
                 print(f'Allocated {a/1000000} / {t/1000000}')
                 
                 
@@ -76,7 +76,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 a = torch.cuda.memory_allocated(0)
                 f = r-a
                 print('After moving batch data to device')
-                print(f'Reserved {a/1000000} / {t/1000000}')
+                print(f'Reserved {r/1000000} / {t/1000000}')
                 print(f'Allocated {a/1000000} / {t/1000000}')
                 
                 ############################
@@ -93,7 +93,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 a = torch.cuda.memory_allocated(0)
                 f = r-a
                 print('After creating d label to device')
-                print(f'Reserved {a/1000000} / {t/1000000}')
+                print(f'Reserved {r/1000000} / {t/1000000}')
                 print(f'Allocated {a/1000000} / {t/1000000}')
                 
                 # Forward pass real batch through D
@@ -112,7 +112,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 fake_combined = torch.cat((inputs, seg_labels_out), dim=1).to(device)
                 
                 print('After moving generated data to device for dicriminator training')
-                print(f'Reserved {a/1000000} / {t/1000000}')
+                print(f'Reserved {r/1000000} / {t/1000000}')
                 print(f'Allocated {a/1000000} / {t/1000000}')
                 
                 # Classify all fake batch with D
@@ -151,7 +151,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     fake_combined = torch.cat((inputs, seg_labels_out), dim=1).to(device)
                     
                     print('After moving generated data to device for model training')
-                    print(f'Reserved {a/1000000} / {t/1000000}')
+                    print(f'Reserved {r/1000000} / {t/1000000}')
                     print(f'Allocated {a/1000000} / {t/1000000}')
                 
                     output = netD(fake_combined).view(-1)
