@@ -71,13 +71,14 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 labels = labels.to(device)
                 combined = torch.cat((inputs, labels), dim=1).to(device)
                 
-                t = torch.cuda.get_device_properties(0).total_memory
-                r = torch.cuda.memory_reserved(0)
-                a = torch.cuda.memory_allocated(0)
-                f = r-a
-                print('After moving batch data to device')
-                print(f'Reserved {r/1000000} / {t/1000000}')
-                print(f'Allocated {a/1000000} / {t/1000000}')
+                continue
+                #t = torch.cuda.get_device_properties(0).total_memory
+                #r = torch.cuda.memory_reserved(0)
+                #a = torch.cuda.memory_allocated(0)
+                #f = r-a
+                #print('After moving batch data to device')
+                #print(f'Reserved {r/1000000} / {t/1000000}')
+                #print(f'Allocated {a/1000000} / {t/1000000}')
                 
                 ############################
                 # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
@@ -88,24 +89,24 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 b_size = combined.size(0)
                 label = torch.full((b_size,), real_label, dtype=torch.float, device=device)
                 
-                t = torch.cuda.get_device_properties(0).total_memory
-                r = torch.cuda.memory_reserved(0)
-                a = torch.cuda.memory_allocated(0)
-                f = r-a
-                print('After creating d label to device')
-                print(f'Reserved {r/1000000} / {t/1000000}')
-                print(f'Allocated {a/1000000} / {t/1000000}')
+                #t = torch.cuda.get_device_properties(0).total_memory
+                #r = torch.cuda.memory_reserved(0)
+                #a = torch.cuda.memory_allocated(0)
+                #f = r-a
+                #print('After creating d label to device')
+                #print(f'Reserved {r/1000000} / {t/1000000}')
+                #print(f'Allocated {a/1000000} / {t/1000000}')
                 
                 # Forward pass real batch through D
                 output = netD(combined).view(-1)
                 
-                t = torch.cuda.get_device_properties(0).total_memory
-                r = torch.cuda.memory_reserved(0)
-                a = torch.cuda.memory_allocated(0)
-                f = r-a
-                print('After running D on real batch')
-                print(f'Reserved {r/1000000} / {t/1000000}')
-                print(f'Allocated {a/1000000} / {t/1000000}')
+                #t = torch.cuda.get_device_properties(0).total_memory
+                #r = torch.cuda.memory_reserved(0)
+                #a = torch.cuda.memory_allocated(0)
+                #f = r-a
+                #print('After running D on real batch')
+                #print(f'Reserved {r/1000000} / {t/1000000}')
+                #print(f'Allocated {a/1000000} / {t/1000000}')
                 
                 # Calculate loss on all-real batch
                 errD_real = criterion(output, label)
@@ -116,52 +117,44 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 D_x = output.mean().item()
                 ## Train with all-fake batch
                 # Generate fake image batch with G
-                t = torch.cuda.get_device_properties(0).total_memory
-                r = torch.cuda.memory_reserved(0)
-                a = torch.cuda.memory_allocated(0)
-                f = r-a
-                print('Before running model')
-                print(f'Reserved {r/1000000} / {t/1000000}')
-                print(f'Allocated {a/1000000} / {t/1000000}')
+                #t = torch.cuda.get_device_properties(0).total_memory
+                #r = torch.cuda.memory_reserved(0)
+                #a = torch.cuda.memory_allocated(0)
+                #f = r-a
+                #print('Before running model')
+                #print(f'Reserved {r/1000000} / {t/1000000}')
+                #print(f'Allocated {a/1000000} / {t/1000000}')
                 
                 fake_segmentartion = model(inputs)['out']#.detach()
                 
-                t = torch.cuda.get_device_properties(0).total_memory
-                r = torch.cuda.memory_reserved(0)
-                a = torch.cuda.memory_allocated(0)
-                f = r-a
-                print('After running model')
-                print(f'Reserved {r/1000000} / {t/1000000}')
-                print(f'Allocated {a/1000000} / {t/1000000}')
+                #t = torch.cuda.get_device_properties(0).total_memory
+                #r = torch.cuda.memory_reserved(0)
+                #a = torch.cuda.memory_allocated(0)
+                #f = r-a
+                #print('After running model')
+                #print(f'Reserved {r/1000000} / {t/1000000}')
+                #print(f'Allocated {a/1000000} / {t/1000000}')
 
                 
                 seg_labels_out = fake_segmentartion>0
                 
-                t = torch.cuda.get_device_properties(0).total_memory
-                r = torch.cuda.memory_reserved(0)
-                a = torch.cuda.memory_allocated(0)
-                f = r-a
-                print('After thresholding result')
-                print(f'Reserved {r/1000000} / {t/1000000}')
-                print(f'Allocated {a/1000000} / {t/1000000}')
-                
-                t = torch.cuda.get_device_properties(0).total_memory
-                r = torch.cuda.memory_reserved(0)
-                a = torch.cuda.memory_allocated(0)
-                f = r-a
-                print('Before moving generated data to device for dicriminator training')
-                print(f'Reserved {r/1000000} / {t/1000000}')
-                print(f'Allocated {a/1000000} / {t/1000000}')
-                
+                #t = torch.cuda.get_device_properties(0).total_memory
+                #r = torch.cuda.memory_reserved(0)
+                #a = torch.cuda.memory_allocated(0)
+                #f = r-a
+                #print('After thresholding result')
+                #print(f'Reserved {r/1000000} / {t/1000000}')
+                #print(f'Allocated {a/1000000} / {t/1000000}')
+
                 fake_combined = torch.cat((inputs, seg_labels_out), dim=1)#.to(device)
                 
-                t = torch.cuda.get_device_properties(0).total_memory
-                r = torch.cuda.memory_reserved(0)
-                a = torch.cuda.memory_allocated(0)
-                f = r-a
-                print('After moving generated data to device for dicriminator training')
-                print(f'Reserved {r/1000000} / {t/1000000}')
-                print(f'Allocated {a/1000000} / {t/1000000}')
+                #t = torch.cuda.get_device_properties(0).total_memory
+                #r = torch.cuda.memory_reserved(0)
+                #a = torch.cuda.memory_allocated(0)
+                #f = r-a
+                #print('After moving generated data to device for dicriminator training')
+                #print(f'Reserved {r/1000000} / {t/1000000}')
+                #print(f'Allocated {a/1000000} / {t/1000000}')
                 
                 # Classify all fake batch with D
                 output = netD(fake_combined.detach()).view(-1)
@@ -198,13 +191,13 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     seg_labels_out = outputs>0
                     fake_combined = torch.cat((inputs, seg_labels_out), dim=1)#.to(device)
                     
-                    t = torch.cuda.get_device_properties(0).total_memory
-                    r = torch.cuda.memory_reserved(0)
-                    a = torch.cuda.memory_allocated(0)
-                    f = r-a
-                    print('After moving generated data to device for model training')
-                    print(f'Reserved {r/1000000} / {t/1000000}')
-                    print(f'Allocated {a/1000000} / {t/1000000}')
+                    #t = torch.cuda.get_device_properties(0).total_memory
+                    #r = torch.cuda.memory_reserved(0)
+                    #a = torch.cuda.memory_allocated(0)
+                    #f = r-a
+                    #print('After moving generated data to device for model training')
+                    #print(f'Reserved {r/1000000} / {t/1000000}')
+                    #print(f'Allocated {a/1000000} / {t/1000000}')
                 
                     output = netD(fake_combined).view(-1)
                     
