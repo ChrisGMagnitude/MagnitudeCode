@@ -178,9 +178,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Update D
                 if phase == 'train':
                     optimizerD.step()
-                    train_loss_d.append(errD)
+                    train_loss_d.append(errD.detatch())
                 else:
-                    val_loss_d.append(errD)
+                    val_loss_d.append(errD.detatch())
                 
                 ############################
                 # (2) Update G network: maximize log(D(G(z)))
@@ -216,9 +216,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                             optimizerG.step()
                 # statistics
                 if phase == 'train':
-                    train_loss_g.append(errG)
+                    train_loss_g.append(errG.detatch())
                 else:
-                    val_loss_g.append(errG)
+                    val_loss_g.append(errG.detatch())
                 
                 
                 
