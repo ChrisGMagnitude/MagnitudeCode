@@ -71,7 +71,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 labels = labels.to(device)
                 combined = torch.cat((inputs, labels), dim=1).to(device)
                 
-                continue
+                
                 #t = torch.cuda.get_device_properties(0).total_memory
                 #r = torch.cuda.memory_reserved(0)
                 #a = torch.cuda.memory_allocated(0)
@@ -89,6 +89,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 b_size = combined.size(0)
                 label = torch.full((b_size,), real_label, dtype=torch.float, device=device)
                 
+                
                 #t = torch.cuda.get_device_properties(0).total_memory
                 #r = torch.cuda.memory_reserved(0)
                 #a = torch.cuda.memory_allocated(0)
@@ -100,6 +101,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Forward pass real batch through D
                 output = netD(combined).view(-1)
                 
+                continue
                 #t = torch.cuda.get_device_properties(0).total_memory
                 #r = torch.cuda.memory_reserved(0)
                 #a = torch.cuda.memory_allocated(0)
