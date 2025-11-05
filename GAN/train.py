@@ -89,9 +89,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 b_size = combined.size(0)
                 label = torch.full((b_size,), real_label, dtype=torch.float, device=device)
                 # Forward pass real batch through D
-                output = netD(combined).view(-1)
+                output_r = netD(combined).view(-1)
                 # Calculate loss on all-real batch
-                errD_real = criterion(output, label)
+                errD_real = criterion(output_r, label)
                 # Calculate gradients for D in backward pass
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
@@ -106,9 +106,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Create fake label
                 label.fill_(fake_label)
                 # Classify all fake batch with D
-                output = netD(fake_combined.detach()).view(-1)
+                output_f = netD(fake_combined.detach()).view(-1)
                 # Calculate D's loss on the all-fake batch
-                errD_fake = criterion(output, label)
+                errD_fake = criterion(output_f, label)
                 # Calculate the gradients for this batch, accumulated (summed) with previous gradients
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
@@ -127,11 +127,11 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Update D
                 if phase == 'train':
                     train_loss_d.append(errD.cpu())
-                    print(errD_real.cpu().numpy())
-                    print(errD_real.cpu().numpy()>0.5)
-                    print(sum(errD_real.cpu().numpy()>0.5))
-                    print(len(errD_real.cpu().numpy()))
-                    train_real_accuracy_d.append(sum(errD_real.cpu().numpy()>0.5)/len(errD_real.cpu().numpy()))
+                    print(output_f.cpu().numpy())
+                    print(output_f.cpu().numpy()>0.5)
+                    print(sum(output_f.cpu().numpy()>0.5))
+                    print(len(output_f.cpu().numpy()))
+                    train_real_accuracy_d.append(sum(output_f.cpu().numpy()>0.5)/len(output_f.cpu().numpy()))
                     train_fake_accuracy_d.append(sum(errD_fake.cpu().numpy()<0.5)/len(errD_fake.cpu().numpy()))
                 else:
                     val_loss_d.append(errD.cpu())
