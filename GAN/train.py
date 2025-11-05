@@ -129,9 +129,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Update D
                 if phase == 'train':
                     optimizerD.step()
-                    train_loss_d.append(errD.cpu())
+                    train_loss_d.append(errD.detach().cpu())
                 else:
-                    val_loss_d.append(errD.cpu())
+                    val_loss_d.append(errD.detach().cpu())
                 #continue
                 
                 ############################
@@ -171,9 +171,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                         optimizerG.step()
 
                 if phase == 'train':
-                    train_loss_g.append(errG.cpu())
+                    train_loss_g.append(errG.detach().cpu())
                 else:
-                    val_loss_g.append(errG.cpu())
+                    val_loss_g.append(errG.detach().cpu())
                 
                 
                 
