@@ -92,17 +92,11 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                         errD_real.backward()
                 D_x = output.mean().item()
-                continue
+                #continue
                 
                 fake_segmentartion = model(inputs)['out']#.detach()
                 
-                #t = torch.cuda.get_device_properties(0).total_memory
-                #r = torch.cuda.memory_reserved(0)
-                #a = torch.cuda.memory_allocated(0)
-                #f = r-a
-                #print('After running model')
-                #print(f'Reserved {r/1000000} / {t/1000000}')
-                #print(f'Allocated {a/1000000} / {t/1000000}')
+                continue
 
                 
                 seg_labels_out = fake_segmentartion>0
