@@ -72,7 +72,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 model.eval()
                 
                 if phase == 'train':
-                    netD.train()  # Set model to training mode
+                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
+                        netD.train()  # Set model to training mode
+                    else:
+                        netD.eval()   # Set model to evaluate mode
                 else:
                     netD.eval()   # Set model to evaluate mode
                 
@@ -136,7 +139,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 ###########################
                 
                 if phase == 'train':
-                    model.train()  # Set model to training mode
+                    if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
+                        model.train()  # Set model to training mode
+                    else:
+                        model.eval() 
                 else:
                     model.eval()   # Set model to evaluate mode
                 netD.eval() 
@@ -152,7 +158,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 with torch.set_grad_enabled(phase == 'train'):
                     outputs = model(inputs)['out']#.detach()
                     seg_labels_out = outputs>0
-                    fake_combined = torch.cat((inputs, seg_labels_out), dim=1)#.to(device)
+                    fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
                     
                     #continue
                     output = netD(fake_combined).view(-1)
@@ -177,13 +183,13 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             if phase == 'train':
                 #scheduler.step()
                 
-                train_loss_g_epoch.append(np.mean(train_loss_g))
-                train_loss_d_epoch.append(np.mean(train_loss_d))
+                train_loss_g_epoch.append(np.mean(train_loss_g.cpu()))
+                train_loss_d_epoch.append(np.mean(train_loss_d.cpu()))
                 print(f'{phase} Model Loss: {np.mean(train_loss_g):.4f} Discriminator Loss: {np.mean(train_loss_d):.4f}')
                 
             else:
-                val_loss_g_epoch.append(np.mean(val_loss_g))
-                val_loss_d_epoch.append(np.mean(val_loss_d))
+                val_loss_g_epoch.append(np.mean(val_loss_g.cpu()))
+                val_loss_d_epoch.append(np.mean(val_loss_d.cpu()))
                 
                 print(f'{phase} Model Loss: {np.mean(val_loss_g):.4f} Discriminator Loss: {np.mean(val_loss_d):.4f}')
             
