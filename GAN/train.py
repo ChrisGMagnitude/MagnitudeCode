@@ -146,7 +146,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 model.zero_grad()
                 label.fill_(real_label)
                 
-                continue
+                #continue
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
@@ -154,7 +154,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     seg_labels_out = outputs>0
                     fake_combined = torch.cat((inputs, seg_labels_out), dim=1)#.to(device)
                     
-
+                    continue
                     output = netD(fake_combined).view(-1)
                     
                     errG = criterion(output, label)
@@ -165,6 +165,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                             optimizerG.step()
                     continue
                 # statistics
+                continue
+            
                 if phase == 'train':
                     train_loss_g.append(errG)
                 else:
