@@ -163,9 +163,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                         if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
                             errG.backward()
                             optimizerG.step()
-                    continue
+                    #continue
                 # statistics
-                continue
+                #continue
             
                 if phase == 'train':
                     train_loss_g.append(errG)
