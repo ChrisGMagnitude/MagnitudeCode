@@ -45,13 +45,12 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
         print(f'Allocated {a/1000000} / {t/1000000}')
         
         # Each epoch has a training and validation phase
-        for phase in ['train']:#, 'val']:
+        for phase in ['train', 'val']:
             train_loss_g = []
             val_loss_g = []
             train_loss_d = []
             val_loss_d = []
             # Iterate over data.
-            phase='train'
             for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
                 
                 # Format data and labels and move to GPU
@@ -111,95 +110,6 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 #if phase == 'train':
                 #    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                 optimizerD.step()
-                    
-                # Compute error of D as sum over the fake and the real batches
-                errD_real = errD_real.detach()
-                errD_fake = errD_fake.detach()
-                errD = errD_real + errD_fake
-                # Update D
-                if phase == 'train':
-                    train_loss_d.append(errD.cpu())
-                else:
-                    val_loss_d.append(errD.cpu())
-                    
-                # Iterate over data.
-            if phase == 'train':
-                #scheduler.step()
-                if len(train_loss_g)>0:
-                    train_loss_g_epoch.append(str(np.mean(train_loss_g)))
-                    print(f'{phase} Model Loss: {np.mean(train_loss_g):.4f}')
-                if len(train_loss_d)>0:
-                    train_loss_d_epoch.append(str(np.mean(train_loss_d)))
-                    print(f'{phase} Discriminator Loss: {np.mean(train_loss_d):.4f}')
-                
-            else:
-                if len(val_loss_g)>0:
-                    val_loss_g_epoch.append(str(np.mean(val_loss_g)))
-                    print(f'{phase} Model Loss: {np.mean(val_loss_g):.4f}')
-                if len(val_loss_d)>0:
-                    val_loss_d_epoch.append(str(np.mean(val_loss_d)))
-                    print(f'{phase} Discriminator Loss: {np.mean(val_loss_d):.4f}')
-                
-            phase='val'
-            for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
-                
-                # Format data and labels and move to GPU
-                labels = labels.type(torch.float)
-                inputs = inputs.to(device)
-                labels = labels.to(device)
-                combined = torch.cat((inputs, labels), dim=1).to(device)
-                
-                ############################
-                # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
-                ###########################
-                # Segmentation model in eval mode when training netD
-                model.eval()
-                
-                # netD to training mode only for training loop, otherwise eval mode
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                        netD.train()  # Set model to training mode
-                    else:
-                        netD.eval()   # Set model to evaluate mode
-                else:
-                    netD.eval()   # Set model to evaluate mode
-                
-                ## Train with all-real batch
-                netD.zero_grad()
-                
-                # Format batch
-                b_size = combined.size(0)
-                label = torch.full((b_size,), real_label, dtype=torch.float, device=device)
-                # Forward pass real batch through D
-                output = netD(combined).view(-1)
-                # Calculate loss on all-real batch
-                errD_real = criterion(output, label)
-                # Calculate gradients for D in backward pass
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                        errD_real.backward()
-                
-                
-                ## Create all fake batch       
-                fake_segmentartion = model(inputs)['out'].detach()
-                seg_labels_out = fake_segmentartion>0
-                fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
-                
-                # Create fake label
-                label.fill_(fake_label)
-                # Classify all fake batch with D
-                output = netD(fake_combined.detach()).view(-1)
-                # Calculate D's loss on the all-fake batch
-                errD_fake = criterion(output, label)
-                # Calculate the gradients for this batch, accumulated (summed) with previous gradients
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                        errD_fake.backward()
-                        
-                # Update D
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                        optimizerD.step()
                     
                 # Compute error of D as sum over the fake and the real batches
                 errD_real = errD_real.detach()
