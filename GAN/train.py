@@ -91,7 +91,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 D_x = output.mean().item()
                 #continue
                 
-                fake_segmentartion = model(inputs)['out']#.detach()
+                fake_segmentartion = model(inputs)['out'].detach()
                 
                 continue
 
