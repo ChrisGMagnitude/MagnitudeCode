@@ -127,6 +127,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Update D
                 if phase == 'train':
                     train_loss_d.append(errD.cpu())
+                    print(errD_real.cpu().numpy())
+                    print(errD_real.cpu().numpy()>0.5)
+                    print(sum(errD_real.cpu().numpy()>0.5))
+                    print(len(errD_real.cpu().numpy()))
                     train_real_accuracy_d.append(sum(errD_real.cpu().numpy()>0.5)/len(errD_real.cpu().numpy()))
                     train_fake_accuracy_d.append(sum(errD_fake.cpu().numpy()<0.5)/len(errD_fake.cpu().numpy()))
                 else:
