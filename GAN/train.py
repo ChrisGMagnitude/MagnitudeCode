@@ -85,10 +85,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Calculate loss on all-real batch
                 errD_real = criterion(output, label)
                 # Calculate gradients for D in backward pass
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                        errD_real.backward()
-                
+                #if phase == 'train':
+                #    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
+                #        errD_real.backward()
+                errD_real.backward()
                 
                 ## Create all fake batch       
                 fake_segmentartion = model(inputs)['out'].detach()
@@ -102,9 +102,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Calculate D's loss on the all-fake batch
                 errD_fake = criterion(output, label)
                 # Calculate the gradients for this batch, accumulated (summed) with previous gradients
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                        errD_fake.backward()
+                #if phase == 'train':
+                #    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
+                #       errD_fake.backward(
+                errD_fake.backward()
                         
                 # Update D
                 #if phase == 'train':
