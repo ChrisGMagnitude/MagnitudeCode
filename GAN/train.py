@@ -29,7 +29,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
     val_loss_g_epoch = []
     train_loss_d_epoch = []
     val_loss_d_epoch = []
-    
+    train_real_accuracy_d_epoch = []
+    train_fake_accuracy_d_epoch = []
+    val_real_accuracy_d_epoch = []
+    val_fake_accuracy_d_epoch = []
     
     
     for epoch in range(num_epochs):
@@ -50,6 +53,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             val_loss_g = []
             train_loss_d = []
             val_loss_d = []
+            train_real_accuracy_d = []
+            train_fake_accuracy_d = []
+            val_real_accuracy_d = []
+            val_fake_accuracy_d = []
             # Iterate over data.
             for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
                 
@@ -120,8 +127,12 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Update D
                 if phase == 'train':
                     train_loss_d.append(errD.cpu())
+                    train_real_accuracy_d.append(sum(errD_real.cpu()>0.5)/len(errD_real.cpu()))
+                    train_fake_accuracy_d.append(sum(errD_fake.cpu()<0.5)/len(errD_fake.cpu()))
                 else:
                     val_loss_d.append(errD.cpu())
+                    val_real_accuracy_d.append(sum(errD_real.cpu()>0.5)/len(errD_real.cpu()))
+                    val_fake_accuracy_d.append(sum(errD_fake.cpu()<0.5)/len(errD_fake.cpu()))
                 #continue
                 
                 #############################
@@ -174,7 +185,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     print(f'{phase} Model Loss: {np.mean(train_loss_g):.4f}')
                 if len(train_loss_d)>0:
                     train_loss_d_epoch.append(str(np.mean(train_loss_d)))
-                    print(f'{phase} Discriminator Loss: {np.mean(train_loss_d):.4f}')
+                    train_real_accuracy_d_epoch.append(str(np.mean(train_real_accuracy_d)))
+                    train_fake_accuracy_d_epoch.append(str(np.mean(train_fake_accuracy_d)))
+                    print(f'{phase} Discriminator Loss: {np.mean(train_loss_d):.4f} - Accuraccy Real Interp: {np.mean(train_real_accuracy_d):.4f} - Accuraccy Seg Interp: {np.mean(train_fake_accuracy_d):.4f}')
                 
             else:
                 if len(val_loss_g)>0:
@@ -182,7 +195,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     print(f'{phase} Model Loss: {np.mean(val_loss_g):.4f}')
                 if len(val_loss_d)>0:
                     val_loss_d_epoch.append(str(np.mean(val_loss_d)))
-                    print(f'{phase} Discriminator Loss: {np.mean(val_loss_d):.4f}')
+                    val_real_accuracy_d_epoch.append(str(np.mean(val_real_accuracy_d)))
+                    val_fake_accuracy_d_epoch.append(str(np.mean(val_fake_accuracy_d)))
+                    print(f'{phase} Discriminator Loss: {np.mean(val_loss_d):.4f} - Accuraccy Real Interp: {np.mean(val_real_accuracy_d):.4f} - Accuraccy Seg Interp: {np.mean(val_fake_accuracy_d):.4f}')
                 
             
         
@@ -194,6 +209,11 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             log2['val_loss_g'] = val_loss_g_epoch
             log2['train_loss_d'] = train_loss_d_epoch
             log2['val_loss_d'] = val_loss_d_epoch
+            log2['train_real_accuracy_d_epoch'] = train_real_accuracy_d_epoch
+            log2['train_fake_accuracy_d_epoch'] = train_fake_accuracy_d_epoch
+            log2['val_real_accuracy_d_epoch'] = val_real_accuracy_d_epoch
+            log2['val_fake_accuracy_d_epoch'] = val_fake_accuracy_d_epoch
+            
             if log2['initial_weights'] == 'default':    
                 with open(os.path.join(log2['model_path'],log2['name'],str(epoch)+'_epoch_training_log.json'), 'w') as f:
                     record = {}
