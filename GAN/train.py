@@ -129,16 +129,12 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Update D
                 if phase == 'train':
                     train_loss_d.append(errD.cpu())
-                    print(output_f.cpu().numpy())
-                    print(output_f.cpu().numpy()>0.5)
-                    print(sum(output_f.cpu().numpy()>0.5))
-                    print(len(output_f.cpu().numpy()))
-                    train_real_accuracy_d.append(sum(output_f.cpu().numpy()>0.5)/len(output_f.cpu().numpy()))
-                    train_fake_accuracy_d.append(sum(errD_fake.cpu().numpy()<0.5)/len(errD_fake.cpu().numpy()))
+                    train_real_accuracy_d.append(sum(output_r.cpu().numpy()>0.5)/len(output_r.cpu().numpy()))
+                    train_fake_accuracy_d.append(sum(output_f.cpu().numpy()<0.5)/len(output_f.cpu().numpy()))
                 else:
                     val_loss_d.append(errD.cpu())
-                    val_real_accuracy_d.append(sum(errD_real.cpu().numpy()>0.5)/len(errD_real.cpu().numpy()))
-                    val_fake_accuracy_d.append(sum(errD_fake.cpu().numpy()<0.5)/len(errD_fake.cpu().numpy()))
+                    val_real_accuracy_d.append(sum(output_r.cpu().numpy()>0.5)/len(output_r.cpu().numpy()))
+                    val_fake_accuracy_d.append(sum(output_f.cpu().numpy()<0.5)/len(output_f.cpu().numpy()))
                 #continue
                 
                 #############################
