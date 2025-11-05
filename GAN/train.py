@@ -154,7 +154,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     seg_labels_out = outputs>0
                     fake_combined = torch.cat((inputs, seg_labels_out), dim=1)#.to(device)
                     
-                    continue
+                    #continue
                     output = netD(fake_combined).view(-1)
                     
                     errG = criterion(output, label)
