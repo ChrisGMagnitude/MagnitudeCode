@@ -107,11 +107,12 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 label.fill_(fake_label)
                 errD_fake = criterion(output, label)
                 
-                continue
+                #continue
                 # Calculate the gradients for this batch, accumulated (summed) with previous gradients
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                         errD_fake.backward()
+                continue
                 
                 # Compute error of D as sum over the fake and the real batches
                 errD = errD_real + errD_fake
