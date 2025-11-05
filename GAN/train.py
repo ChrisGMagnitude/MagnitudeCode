@@ -112,7 +112,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                         errD_fake.backward()
-                continue
+                #continue
                 
                 # Compute error of D as sum over the fake and the real batches
                 errD = errD_real + errD_fake
@@ -122,6 +122,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     train_loss_d.append(errD)
                 else:
                     val_loss_d.append(errD)
+                continue
                 
                 ############################
                 # (2) Update G network: maximize log(D(G(z)))
