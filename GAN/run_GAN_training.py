@@ -29,7 +29,7 @@ epoch_size_val = 20*32*5#1280
 batch_size = 24#32
 num_workers = 8#40
 description = 'deeplabv3_resnet50-GAN'
-trainging_mode = 'all'#'all'#'generator'#'discriminator'
+trainging_mode = 'discriminator'#'all'#'generator'#'discriminator'
 initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
 initial_weights_file = 'last_model_params.pt'#'default'#
 initial_weights_d = r'default'#'default'#
@@ -40,7 +40,7 @@ momentum = 0.9
 step_size = 10
 gamma = 0.6 # 0.6
 weight_decay=0.003
-num_epochs = 50
+num_epochs = 6
 interp_id_lookup = {}
 interp_id_lookup["combinedMask"] = ['Agricultural (Strong)Mask',
                                     'Agricultural (Weak)Mask',
@@ -61,7 +61,7 @@ model_path = r'/mnt/magbucket/segmentation/Models'
 val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=True,label_type=label_type,
                               crop_jitter=[0.2,0.4,1.6], max_white_noise=0.001,interp_id_lookup=interp_id_lookup)
 
-train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=True,label_type=label_type,
+train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',augment=True,label_type=label_type,
                                crop_jitter=[0.2,0.4,1.6], max_white_noise=0.001,interp_id_lookup=interp_id_lookup)
 
 
@@ -186,7 +186,7 @@ optimizerG = optim.Adam(model.parameters(), lr=lr_g, betas=(beta1, 0.999))
 
 
 model, log = train_model(model, netD, optimizerG, optimizerD, criterion,
-                        device, dataloaders, log, num_epochs=25)
+                        device, dataloaders, log, num_epochs=num_epochs)
                          #optimizer_ft, exp_lr_scheduler,
                          #device, dataloaders, log, num_epochs=num_epochs)
 
