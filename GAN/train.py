@@ -138,6 +138,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # (2) Update G network: maximize log(D(G(z)))
                 ###########################
                 
+                
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
                         model.train()  # Set model to training mode
@@ -155,24 +156,20 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 #continue
                 # forward
                 # track history if only in train
-                with torch.set_grad_enabled(phase == 'train'):
-                    outputs = model(inputs)['out']#.detach()
-                    seg_labels_out = outputs>0
-                    fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
-                    
-                    #continue
-                    output = netD(fake_combined).view(-1)
-                    
-                    errG = criterion(output, label)
-                    # backward + optimize only if in training phase
-                    if phase == 'train':
-                        if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
-                            errG.backward()
-                            optimizerG.step()
-                    #continue
-                # statistics
+                outputs = model(inputs)['out']#.detach()
+                seg_labels_out = outputs>0
+                fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
+                
                 #continue
-            
+                output = netD(fake_combined).view(-1)
+                
+                errG = criterion(output, label)
+                # backward + optimize only if in training phase
+                if phase == 'train':
+                    if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
+                        errG.backward()
+                        optimizerG.step()
+
                 if phase == 'train':
                     train_loss_g.append(errG)
                 else:
