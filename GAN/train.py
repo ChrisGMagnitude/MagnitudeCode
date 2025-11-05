@@ -108,9 +108,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                         errD_fake.backward()
                         
                 # Update D
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                        optimizerD.step()
+                #if phase == 'train':
+                #    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
+                optimizerD.step()
                     
                 # Compute error of D as sum over the fake and the real batches
                 errD_real = errD_real.detach()
