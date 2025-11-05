@@ -52,13 +52,13 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             val_loss_d = []
             # Iterate over data.
             for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
-                t = torch.cuda.get_device_properties(0).total_memory
-                r = torch.cuda.memory_reserved(0)
-                a = torch.cuda.memory_allocated(0)
-                f = r-a
-                print('Before moving batch data to device')
-                print(f'Reserved {r/1000000} / {t/1000000}')
-                print(f'Allocated {a/1000000} / {t/1000000}')
+                #t = torch.cuda.get_device_properties(0).total_memory
+                #r = torch.cuda.memory_reserved(0)
+                #a = torch.cuda.memory_allocated(0)
+                #f = r-a
+                #print('Before moving batch data to device')
+                #print(f'Reserved {r/1000000} / {t/1000000}')
+                #print(f'Allocated {a/1000000} / {t/1000000}')
                 
                 
                 labels = labels.type(torch.float)

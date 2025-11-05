@@ -103,14 +103,6 @@ log['gamma'] = gamma
 log['num_epochs'] = num_epochs
 
 
-t = torch.cuda.get_device_properties(0).total_memory
-r = torch.cuda.memory_reserved(0)
-a = torch.cuda.memory_allocated(0)
-f = r-a
-print('Before Loading Model')
-print(f'Reserved {r/1000000} / {t/1000000}')
-print(f'Allocated {a/1000000} / {t/1000000}')
-
 os.mkdir(os.path.join(log['model_path'],log['name']))
 
 device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
@@ -135,13 +127,6 @@ if initial_weights != 'default':
 
 model = model.to(device)
 
-t = torch.cuda.get_device_properties(0).total_memory
-r = torch.cuda.memory_reserved(0)
-a = torch.cuda.memory_allocated(0)
-f = r-a
-print('After morving Model to device')
-print(f'Reserved {r/1000000} / {t/1000000}')
-print(f'Allocated {a/1000000} / {t/1000000}')
 
 
 #GAN Discriminator
@@ -185,14 +170,6 @@ if initial_weights_d != 'default':
     netD.eval()
 
 netD = netD.to(device)
-
-t = torch.cuda.get_device_properties(0).total_memory
-r = torch.cuda.memory_reserved(0)
-a = torch.cuda.memory_allocated(0)
-f = r-a
-print('After morving Discriminator Model to device')
-print(f'Reserved {r/1000000} / {t/1000000}')
-print(f'Allocated {a/1000000} / {t/1000000}')
 
 criterion = nn.BCELoss()
 
