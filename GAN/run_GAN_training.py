@@ -60,7 +60,7 @@ model_path = r'/mnt/magbucket/segmentation/Models'
 
 val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=False,label_type=label_type,interp_id_lookup=interp_id_lookup)
 
-train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',augment=True,label_type=label_type,
+train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=True,label_type=label_type,
                                crop_jitter=[0.2,0.4,1.6], max_white_noise=0.001,interp_id_lookup=interp_id_lookup)
 
 
