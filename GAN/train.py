@@ -66,13 +66,14 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 model.eval()
                 
                 # netD to training mode only for training loop, otherwise eval mode
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                        netD.train()  # Set model to training mode
-                    else:
-                        netD.eval()   # Set model to evaluate mode
-                else:
-                    netD.eval()   # Set model to evaluate mode
+                #if phase == 'train':
+                #    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
+                #        netD.train()  # Set model to training mode
+                #    else:
+                #        netD.eval()   # Set model to evaluate mode
+                #else:
+                #    netD.eval()   # Set model to evaluate mode
+                netD.train()
                 
                 ## Train with all-real batch
                 netD.zero_grad()
