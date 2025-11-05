@@ -29,7 +29,7 @@ epoch_size_val = 20*32*5#1280
 batch_size = 32#32
 num_workers = 8#40
 description = 'deeplabv3_resnet50-GAN'
-trainging_mode = 'discriminator'#'all'#'generator'#'discriminator'
+trainging_mode = 'all'#'all'#'generator'#'discriminator'
 initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
 initial_weights_file = 'last_model_params.pt'#'default'#
 initial_weights_d = r'default'#'default'#
@@ -184,26 +184,6 @@ beta1 = 0.5
 optimizerD = optim.Adam(netD.parameters(), lr=lr_d, betas=(beta1, 0.999))
 optimizerG = optim.Adam(model.parameters(), lr=lr_g, betas=(beta1, 0.999))
 
-# Choose parameters to optimise
-
-#if trainging_mode=='head':
-#    print('head')
-#    params = list(model.classifier.parameters()) + list(model.aux_classifier.parameters())
-#    optimizer_ft = optim.SGD(params, lr=lr, momentum=momentum,weight_decay=weight_decay)
-#elif trainging_mode=='final-fc':
-#    print('final-fc')
-#    optimizer_ft = optim.SGD([model.classifier.low_classifier.parameters(),model.classifier.high_classifier.parameters()], lr=lr, momentum=momentum,weight_decay=weight_decay)
-#elif trainging_mode=='all':
-#    print('all')
-#    optimizer_ft = optim.SGD(model.parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
-#elif trainging_mode=='first-conv':
-#    print('first-conv')
-#    optimizer_ft = optim.adam(model.features[0].parameters(), lr=lr, momentum=momentum,weight_decay=weight_decay)
-    
-
-    
-# Decay LR by a factor of gamma every step_size epochs
-#exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=step_size, gamma=gamma)
 
 model, log = train_model(model, netD, optimizerG, optimizerD, criterion,
                         device, dataloaders, log, num_epochs=25)
