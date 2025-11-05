@@ -94,9 +94,11 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
 
                 # Calculate loss on all-real batch
                 errD_real = criterion(output, label)
-                
-                D_x = output.mean().item()
-                #continue
+                # Calculate gradients for D in backward pass
+                if phase == 'train':
+                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
+                        errD_real.backward()
+                errD_real = errD_real.detach()
                 
                 fake_segmentartion = model(inputs)['out'].detach()
                 
@@ -113,16 +115,17 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Calculate D's loss on the all-fake batch
                 label.fill_(fake_label)
                 errD_fake = criterion(output, label)
-        
-                # Compute error of D as sum over the fake and the real batches
-                errD = errD_real + errD_fake
                 
+                #continue
                 # Calculate the gradients for this batch, accumulated (summed) with previous gradients
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                        errD.backward()
-                errD = errD.detach()
+                        errD_fake.backward()
+                errD_fake = errD_fake.detach()
+                #continue
                 
+                # Compute error of D as sum over the fake and the real batches
+                errD = errD_real + errD_fake
                 # Update D
                 if phase == 'train':
                     optimizerD.step()
@@ -131,46 +134,46 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     val_loss_d.append(errD.cpu())
                 #continue
                 
+                #############################
+                ## (2) Update G network: maximize log(D(G(z)))
                 ############################
-                # (2) Update G network: maximize log(D(G(z)))
-                ###########################
+                #
+                #if log['trainging_mode']=='discriminator':
+                #    continue
+                #
+                #if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
+                #    model.train()  # Set model to training mode
+                #else:
+                #    model.eval()   # Set model to evaluate mode
+                #netD.eval() 
+                #
+                #
+                ## zero the parameter gradients
+                #optimizerG.zero_grad()
+                #model.zero_grad()
+                #label.fill_(real_label)
+                #
+                ##continue
+                ## forward
+                ## track history if only in train
+                #outputs = model(inputs)['out']#.detach()
+                #seg_labels_out = outputs>0
+                #fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
+                #
+                ##continue
+                #output = netD(fake_combined).view(-1)
+                #
+                #errG = criterion(output, label)
+                ## backward + optimize only if in training phase
+                #if phase == 'train':
+                #    if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
+                #        errG.backward()
+                #        optimizerG.step()
                 
-                if log['trainging_mode']=='discriminator':
-                    continue
-                
-                if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
-                    model.train()  # Set model to training mode
-                else:
-                    model.eval()   # Set model to evaluate mode
-                netD.eval() 
-                
-                
-                # zero the parameter gradients
-                optimizerG.zero_grad()
-                model.zero_grad()
-                label.fill_(real_label)
-                
-                #continue
-                # forward
-                # track history if only in train
-                outputs = model(inputs)['out']#.detach()
-                seg_labels_out = outputs>0
-                fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
-                
-                #continue
-                output = netD(fake_combined).view(-1)
-                
-                errG = criterion(output, label)
-                # backward + optimize only if in training phase
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
-                        errG.backward()
-                        optimizerG.step()
-
-                if phase == 'train':
-                    train_loss_g.append(errG.detach().cpu())
-                else:
-                    val_loss_g.append(errG.detach().cpu())
+                #if phase == 'train':
+                #    train_loss_g.append(errG.detach().cpu())
+                #else:
+                #    val_loss_g.append(errG.detach().cpu())
                 
                 
                 

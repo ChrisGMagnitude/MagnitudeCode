@@ -181,8 +181,8 @@ fake_label = 0.
 beta1 = 0.5
 
 # Setup Adam optimizers for both G and D
-optimizerD = optim.Adam(netD.parameters(), lr=lr_g, betas=(beta1, 0.999))
-optimizerG = optim.Adam(model.parameters(), lr=lr_d, betas=(beta1, 0.999))
+optimizerD = optim.Adam(netD.parameters(), lr=lr_d, betas=(beta1, 0.999))
+optimizerG = optim.Adam(model.parameters(), lr=lr_g, betas=(beta1, 0.999))
 
 # Choose parameters to optimise
 
