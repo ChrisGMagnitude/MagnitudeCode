@@ -52,15 +52,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             val_loss_d = []
             # Iterate over data.
             for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
-                #t = torch.cuda.get_device_properties(0).total_memory
-                #r = torch.cuda.memory_reserved(0)
-                #a = torch.cuda.memory_allocated(0)
-                #f = r-a
-                #print('Before moving batch data to device')
-                #print(f'Reserved {r/1000000} / {t/1000000}')
-                #print(f'Allocated {a/1000000} / {t/1000000}')
                 
-                
+                # Format data and labels and move to GPU
                 labels = labels.type(torch.float)
                 inputs = inputs.to(device)
                 labels = labels.to(device)
@@ -69,8 +62,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 ############################
                 # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
                 ###########################
+                # Segmentation model in eval mode when training netD
                 model.eval()
                 
+                # netD to training mode only for training loop, otherwise eval mode
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                         netD.train()  # Set model to training mode
@@ -85,50 +80,43 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Format batch
                 b_size = combined.size(0)
                 label = torch.full((b_size,), real_label, dtype=torch.float, device=device)
-
                 # Forward pass real batch through D
                 output = netD(combined).view(-1)
-                
-                #continue
-
-
                 # Calculate loss on all-real batch
                 errD_real = criterion(output, label)
                 # Calculate gradients for D in backward pass
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                         errD_real.backward()
-                errD_real = errD_real.detach()
                 
+                
+                ## Create all fake batch       
                 fake_segmentartion = model(inputs)['out'].detach()
-                
-                #continue
-
-                
                 seg_labels_out = fake_segmentartion>0
                 fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
                 
-                #continue
-                
+                # Create fake label
+                label.fill_(fake_label)
                 # Classify all fake batch with D
                 output = netD(fake_combined.detach()).view(-1)
                 # Calculate D's loss on the all-fake batch
-                label.fill_(fake_label)
                 errD_fake = criterion(output, label)
-                
-                #continue
                 # Calculate the gradients for this batch, accumulated (summed) with previous gradients
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                         errD_fake.backward()
-                errD_fake = errD_fake.detach()
-                #continue
-                
+                        
+                # Update D
+                if phase == 'train':
+                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
+                        optimizerD.step()
+                    
                 # Compute error of D as sum over the fake and the real batches
+                errD_real = errD_real.detach()
+                errD_fake = errD_fake.detach()
                 errD = errD_real + errD_fake
                 # Update D
                 if phase == 'train':
-                    optimizerD.step()
                     train_loss_d.append(errD.cpu())
                 else:
                     val_loss_d.append(errD.cpu())
@@ -169,7 +157,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 #    if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
                 #        errG.backward()
                 #        optimizerG.step()
-                
+
                 #if phase == 'train':
                 #    train_loss_g.append(errG.detach().cpu())
                 #else:
