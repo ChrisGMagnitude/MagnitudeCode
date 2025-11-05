@@ -146,7 +146,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 model.zero_grad()
                 label.fill_(real_label)
                 
-                #continue
+                continue
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
