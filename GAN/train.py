@@ -97,15 +97,17 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
 
                 
                 seg_labels_out = fake_segmentartion>0
-                fake_combined = torch.cat((inputs, seg_labels_out), dim=1)#.to(device)
+                fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
                 
-                continue
+                #continue
                 
                 # Classify all fake batch with D
                 output = netD(fake_combined.detach()).view(-1)
                 # Calculate D's loss on the all-fake batch
                 label.fill_(fake_label)
                 errD_fake = criterion(output, label)
+                
+                continue
                 # Calculate the gradients for this batch, accumulated (summed) with previous gradients
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
