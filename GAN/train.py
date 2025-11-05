@@ -71,15 +71,6 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 labels = labels.to(device)
                 combined = torch.cat((inputs, labels), dim=1).to(device)
                 
-                
-                #t = torch.cuda.get_device_properties(0).total_memory
-                #r = torch.cuda.memory_reserved(0)
-                #a = torch.cuda.memory_allocated(0)
-                #f = r-a
-                #print('After moving batch data to device')
-                #print(f'Reserved {r/1000000} / {t/1000000}')
-                #print(f'Allocated {a/1000000} / {t/1000000}')
-                
                 ############################
                 # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
                 ###########################
@@ -88,28 +79,12 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Format batch
                 b_size = combined.size(0)
                 label = torch.full((b_size,), real_label, dtype=torch.float, device=device)
-                
-                
-                #t = torch.cuda.get_device_properties(0).total_memory
-                #r = torch.cuda.memory_reserved(0)
-                #a = torch.cuda.memory_allocated(0)
-                #f = r-a
-                #print('After creating d label to device')
-                #print(f'Reserved {r/1000000} / {t/1000000}')
-                #print(f'Allocated {a/1000000} / {t/1000000}')
-                
+
                 # Forward pass real batch through D
                 output = netD(combined).view(-1)
                 
-                continue
-                #t = torch.cuda.get_device_properties(0).total_memory
-                #r = torch.cuda.memory_reserved(0)
-                #a = torch.cuda.memory_allocated(0)
-                #f = r-a
-                #print('After running D on real batch')
-                #print(f'Reserved {r/1000000} / {t/1000000}')
-                #print(f'Allocated {a/1000000} / {t/1000000}')
-                
+                #continue
+
                 # Calculate loss on all-real batch
                 errD_real = criterion(output, label)
                 # Calculate gradients for D in backward pass
@@ -117,15 +92,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                         errD_real.backward()
                 D_x = output.mean().item()
-                ## Train with all-fake batch
-                # Generate fake image batch with G
-                #t = torch.cuda.get_device_properties(0).total_memory
-                #r = torch.cuda.memory_reserved(0)
-                #a = torch.cuda.memory_allocated(0)
-                #f = r-a
-                #print('Before running model')
-                #print(f'Reserved {r/1000000} / {t/1000000}')
-                #print(f'Allocated {a/1000000} / {t/1000000}')
+                continue
                 
                 fake_segmentartion = model(inputs)['out']#.detach()
                 
