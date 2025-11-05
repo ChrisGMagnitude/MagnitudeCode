@@ -179,16 +179,21 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
             if phase == 'train':
                 #scheduler.step()
-                
-                train_loss_g_epoch.append(np.mean(train_loss_g))
-                train_loss_d_epoch.append(np.mean(train_loss_d))
-                print(f'{phase} Model Loss: {np.mean(train_loss_g):.4f} Discriminator Loss: {np.mean(train_loss_d):.4f}')
+                if len(train_loss_g)>0:
+                    train_loss_g_epoch.append(np.mean(train_loss_g.cpu()))
+                    print(f'{phase} Model Loss: {np.mean(train_loss_g):.4f}')
+                if len(train_loss_d)>0:
+                    train_loss_d_epoch.append(np.mean(train_loss_d.cpu()))
+                    print(f'{phase} Discriminator Loss: {np.mean(train_loss_d):.4f}')
                 
             else:
-                val_loss_g_epoch.append(np.mean(val_loss_g))
-                val_loss_d_epoch.append(np.mean(val_loss_d))
+                if len(val_loss_g)>0:
+                    val_loss_g_epoch.append(np.mean(val_loss_g.cpu()))
+                    print(f'{phase} Model Loss: {np.mean(val_loss_g):.4f}')
+                if len(val_loss_d)>0:
+                    val_loss_d_epoch.append(np.mean(val_loss_d.cpu()))
+                    print(f'{phase} Discriminator Loss: {np.mean(val_loss_d):.4f}')
                 
-                print(f'{phase} Model Loss: {np.mean(val_loss_g):.4f} Discriminator Loss: {np.mean(val_loss_d):.4f}')
             
         
         if epoch%5 == 0:
