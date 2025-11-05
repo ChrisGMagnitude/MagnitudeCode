@@ -70,8 +70,15 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
                 ###########################
                 model.eval()
+                
+                if phase == 'train':
+                    netD.train()  # Set model to training mode
+                else:
+                    netD.eval()   # Set model to evaluate mode
+                
                 ## Train with all-real batch
                 netD.zero_grad()
+                
                 # Format batch
                 b_size = combined.size(0)
                 label = torch.full((b_size,), real_label, dtype=torch.float, device=device)
@@ -132,6 +139,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     model.train()  # Set model to training mode
                 else:
                     model.eval()   # Set model to evaluate mode
+                netD.eval() 
                 
                 # zero the parameter gradients
                 optimizerG.zero_grad()
