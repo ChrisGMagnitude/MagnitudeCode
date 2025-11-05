@@ -138,15 +138,15 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # (2) Update G network: maximize log(D(G(z)))
                 ###########################
                 
+                if log['trainging_mode']=='discriminator':
+                    continue
                 
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
-                        model.train()  # Set model to training mode
-                    else:
-                        model.eval() 
+                if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
+                    model.train()  # Set model to training mode
                 else:
                     model.eval()   # Set model to evaluate mode
                 netD.eval() 
+                
                 
                 # zero the parameter gradients
                 optimizerG.zero_grad()
