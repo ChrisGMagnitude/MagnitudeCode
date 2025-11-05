@@ -146,7 +146,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 model.zero_grad()
                 label.fill_(real_label)
                 
-                continue
+                #continue
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
@@ -154,14 +154,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     seg_labels_out = outputs>0
                     fake_combined = torch.cat((inputs, seg_labels_out), dim=1)#.to(device)
                     
-                    #t = torch.cuda.get_device_properties(0).total_memory
-                    #r = torch.cuda.memory_reserved(0)
-                    #a = torch.cuda.memory_allocated(0)
-                    #f = r-a
-                    #print('After moving generated data to device for model training')
-                    #print(f'Reserved {r/1000000} / {t/1000000}')
-                    #print(f'Allocated {a/1000000} / {t/1000000}')
-                
+
                     output = netD(fake_combined).view(-1)
                     
                     errG = criterion(output, label)
@@ -170,6 +163,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                         if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
                             errG.backward()
                             optimizerG.step()
+                    continue
                 # statistics
                 if phase == 'train':
                     train_loss_g.append(errG)
