@@ -129,7 +129,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     train_loss_d.append(errD)
                 else:
                     val_loss_d.append(errD)
-                continue
+                #continue
                 
                 ############################
                 # (2) Update G network: maximize log(D(G(z)))
@@ -145,6 +145,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 optimizerG.zero_grad()
                 model.zero_grad()
                 label.fill_(real_label)
+                
+                continue
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
