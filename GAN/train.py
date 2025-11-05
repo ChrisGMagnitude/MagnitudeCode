@@ -143,11 +143,13 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 if log['trainging_mode']=='discriminator':
                     continue
-                
-                if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
-                    model.train()  # Set model to training mode
+                if phase == 'train':
+                    if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
+                        model.train()  # Set model to training mode
+                    else:
+                        model.eval()   # Set model to evaluate mode
                 else:
-                    model.eval()   # Set model to evaluate mode
+                    model.eval()
                 netD.eval() 
                 
                 
@@ -172,7 +174,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
                         errG.backward()
                         optimizerG.step()
-
+                errG = errG.detach()
+                
+                
                 if phase == 'train':
                     train_loss_g.append(errG.detach().cpu())
                 else:
