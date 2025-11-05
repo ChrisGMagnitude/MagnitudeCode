@@ -46,11 +46,6 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
         
         # Each epoch has a training and validation phase
         for phase in ['train', 'val']:
-            if phase == 'train':
-                model.train()  # Set model to training mode
-            else:
-                model.eval()   # Set model to evaluate mode
-            
             train_loss_g = []
             val_loss_g = []
             train_loss_d = []
@@ -74,6 +69,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 ############################
                 # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
                 ###########################
+                model.eval()
                 ## Train with all-real batch
                 netD.zero_grad()
                 # Format batch
@@ -84,6 +80,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 output = netD(combined).view(-1)
                 
                 #continue
+
 
                 # Calculate loss on all-real batch
                 errD_real = criterion(output, label)
@@ -142,6 +139,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # (2) Update G network: maximize log(D(G(z)))
                 ###########################
                 
+                if phase == 'train':
+                    model.train()  # Set model to training mode
+                else:
+                    model.eval()   # Set model to evaluate mode
                 
                 # zero the parameter gradients
                 optimizerG.zero_grad()

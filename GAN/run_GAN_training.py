@@ -102,6 +102,7 @@ log['step_size'] = step_size
 log['gamma'] = gamma
 log['num_epochs'] = num_epochs
 
+
 t = torch.cuda.get_device_properties(0).total_memory
 r = torch.cuda.memory_reserved(0)
 a = torch.cuda.memory_allocated(0)
