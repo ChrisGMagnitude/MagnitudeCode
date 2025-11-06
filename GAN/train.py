@@ -174,6 +174,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 output = netD(fake_combined).view(-1)
                 
                 errG = criterion(output, label)
+                output = output.detach()
                 # backward + optimize only if in training phase
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
