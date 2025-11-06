@@ -20,7 +20,7 @@ from pynvml import *
 
 def train_model(model, netD, optimizerG, optimizerD, criterion,
                 device, dataloaders, log, num_epochs=25,
-                real_label = 1, fake_label = 0):
+                real_label = 1, fake_label = 0, label_smoothing = 0.1):
     
 
     # Create a temporary directory to save training checkpoints
@@ -87,7 +87,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 # Format batch
                 b_size = combined.size(0)
-                label = torch.full((b_size,), real_label, dtype=torch.float, device=device)
+                label = torch.full((b_size,), real_label - label_smoothing, dtype=torch.float, device=device)
                 # Forward pass real batch through D
                 output_r = netD(combined).view(-1)
                 # Calculate loss on all-real batch
