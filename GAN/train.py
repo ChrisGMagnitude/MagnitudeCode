@@ -31,8 +31,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
     val_loss_d_epoch = []
     train_real_accuracy_d_epoch = []
     train_fake_accuracy_d_epoch = []
+    train_fake_accuracy_g_epoch = []
     val_real_accuracy_d_epoch = []
     val_fake_accuracy_d_epoch = []
+    val_fake_accuracy_g_epoch = []
     
     
     for epoch in range(num_epochs):
@@ -55,8 +57,11 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             val_loss_d = []
             train_real_accuracy_d = []
             train_fake_accuracy_d = []
+            train_fake_accuracy_g = []
             val_real_accuracy_d = []
             val_fake_accuracy_d = []
+            val_fake_accuracy_g = []
+            
             # Iterate over data.
             for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
                 
@@ -179,8 +184,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 if phase == 'train':
                     train_loss_g.append(errG.detach().cpu())
+                    train_fake_accuracy_g.append(sum(output.cpu().numpy()>0.5)/len(output.cpu().numpy()))
                 else:
                     val_loss_g.append(errG.detach().cpu())
+                    val_fake_accuracy_g.append(sum(output.cpu().numpy()>0.5)/len(output.cpu().numpy()))
                 
                 
                 
@@ -188,7 +195,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 #scheduler.step()
                 if len(train_loss_g)>0:
                     train_loss_g_epoch.append(str(np.mean(train_loss_g)))
-                    print(f'{phase} Model Loss: {np.mean(train_loss_g):.4f}')
+                    train_fake_accuracy_g_epoch.append(str(np.mean(train_fake_accuracy_g)))
+                    print(f'{phase} Model Loss: {np.mean(train_loss_g):.4f} - Accuracy: {np.mean(train_fake_accuracy_g):.4f}')
                 if len(train_loss_d)>0:
                     train_loss_d_epoch.append(str(np.mean(train_loss_d)))
                     train_real_accuracy_d_epoch.append(str(np.mean(train_real_accuracy_d)))
@@ -198,7 +206,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             else:
                 if len(val_loss_g)>0:
                     val_loss_g_epoch.append(str(np.mean(val_loss_g)))
-                    print(f'{phase} Model Loss: {np.mean(val_loss_g):.4f}')
+                    val_fake_accuracy_g_epoch.append(str(np.mean(val_fake_accuracy_g)))
+                    print(f'{phase} Model Loss: {np.mean(val_loss_g):.4f} - Accuracy: {np.mean(val_fake_accuracy_g):.4f}')
                 if len(val_loss_d)>0:
                     val_loss_d_epoch.append(str(np.mean(val_loss_d)))
                     val_real_accuracy_d_epoch.append(str(np.mean(val_real_accuracy_d)))

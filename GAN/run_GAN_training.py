@@ -28,7 +28,7 @@ epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 24#32
 num_workers = 8#40
-description = 'GAN-sigmoid-labelsmooth-dualTraining'
+description = 'GAN-sigmoid-labelsmooth-dualTraining-d16'
 trainging_mode = 'all'#'all'#'generator'#'discriminator'
 initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
 initial_weights_file = 'last_model_params.pt'#'default'#
@@ -133,7 +133,7 @@ model = model.to(device)
 #GAN Discriminator
 
 nc = 6
-ndf = 64
+ndf = 16#64
 
 class Discriminator(nn.Module):
     def __init__(self):
