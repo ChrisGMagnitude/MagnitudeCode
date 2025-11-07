@@ -90,6 +90,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 ## Train with all-real batch
                 netD.zero_grad()
+                optimizerD.zero_grad()
                 
                 # Format batch
                 b_size = combined.size(0)
