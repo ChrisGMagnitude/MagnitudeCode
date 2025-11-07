@@ -97,15 +97,18 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Forward pass real batch through D
                 output_r = netD(combined).view(-1)
                 
+                
+                
+                # Calculate loss on all-real batch
+                errD_real = criterion(output_r, label)
+                output_r = output_r.detach()
+                
                 if first:
                     print('Real D')
                     print('label',label)
                     print('output_r',output_r)
                     print('errD_real',errD_real)
-                
-                # Calculate loss on all-real batch
-                errD_real = criterion(output_r, label)
-                output_r = output_r.detach()
+                    
                 # Calculate gradients for D in backward pass
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
