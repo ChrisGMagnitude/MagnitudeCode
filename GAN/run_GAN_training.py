@@ -133,7 +133,7 @@ model = model.to(device)
 #GAN Discriminator
 
 nc = 6
-ndf = 16#64
+ndf = 64
 
 class Discriminator(nn.Module):
     def __init__(self):

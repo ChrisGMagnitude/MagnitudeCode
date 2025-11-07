@@ -62,6 +62,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             val_fake_accuracy_d = []
             val_fake_accuracy_g = []
             
+            first = True
             # Iterate over data.
             for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
                 
@@ -95,6 +96,13 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 label = torch.full((b_size,), real_label - label_smoothing, dtype=torch.float, device=device)
                 # Forward pass real batch through D
                 output_r = netD(combined).view(-1)
+                
+                if first:
+                    print('Real D')
+                    print('label',label)
+                    print('output_r',output_r)
+                    print('errD_real',errD_real)
+                
                 # Calculate loss on all-real batch
                 errD_real = criterion(output_r, label)
                 output_r = output_r.detach()
@@ -116,12 +124,19 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Calculate D's loss on the all-fake batch
                 errD_fake = criterion(output_f, label)
                 output_f = output_f.detach()
+                
+                if first:
+                    print('Fake D')
+                    print('label',label)
+                    print('output_f',output_f)
+                    print('errD_fake',errD_fake)
+                    
                 # Calculate the gradients for this batch, accumulated (summed) with previous gradients
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                        errD_fake.backward()
                 #errD_fake.backward()
-                        
+                
                 # Update D
                 #if phase == 'train':
                 #    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
@@ -131,6 +146,11 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 errD_real = errD_real.detach()
                 errD_fake = errD_fake.detach()
                 errD = errD_real + errD_fake
+                
+                if first:
+                    print('Combined D')
+                    print('errD',errD)
+                
                 # Update D
                 if phase == 'train':
                     train_loss_d.append(errD.cpu())
@@ -174,6 +194,14 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 output = netD(fake_combined).view(-1)
                 
                 errG = criterion(output, label)
+                
+                if first:
+                    print('Fake G')
+                    print('label',label)
+                    print('output',output)
+                    print('errG',errG)
+                    first = False
+                
                 output = output.detach()
                 # backward + optimize only if in training phase
                 if phase == 'train':
