@@ -50,7 +50,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
         print(f'Allocated {a/1000000} / {t/1000000}')
         
         # Each epoch has a training and validation phase
-        for phase in ['train']:#, 'val']:
+        for phase in ['train', 'val']:
             train_loss_g = []
             val_loss_g = []
             train_loss_d = []

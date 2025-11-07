@@ -61,7 +61,7 @@ model_path = r'/mnt/magbucket/segmentation/Models'
 val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=True,label_type=label_type,
                               crop_jitter=[0.2,0.4,1.6], max_white_noise=0.001,interp_id_lookup=interp_id_lookup)
 
-train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=True,label_type=label_type,
+train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',augment=True,label_type=label_type,
                                crop_jitter=[0.2,0.4,1.6], max_white_noise=0.001,interp_id_lookup=interp_id_lookup)
 
 
@@ -113,12 +113,6 @@ num_classes = 3#len(train_dataset.label_fields)
 
 model = models.deeplabv3_resnet50(pretrained=True)
 model.classifier[4] = torch.nn.Conv2d(256, num_classes, kernel_size=(1, 1), stride=(1, 1))
-
-#model = models.lraspp_mobilenet_v3_large(pretrained=True)
-#model.classifier.low_classifier = torch.nn.Conv2d(40, num_classes, kernel_size=(1, 1), stride=(1, 1))
-#model.classifier.high_classifier = torch.nn.Conv2d(128, num_classes, kernel_size=(1, 1), stride=(1, 1))
-
-
 
 
 
