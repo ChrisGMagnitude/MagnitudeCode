@@ -82,6 +82,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                         netD.train()  # Set model to training mode
+                        torch.set_grad_enabled(True)
                     else:
                         netD.eval()   # Set model to evaluate mode
                 else:
@@ -170,6 +171,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 ## (2) Update G network: maximize log(D(G(z)))
                 ############################
                 
+                torch.set_grad_enabled(False)
+                
                 if log['trainging_mode']=='discriminator':
                     continue
                 if phase == 'train':
@@ -222,7 +225,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     val_loss_g.append(errG.detach().cpu())
                     val_fake_accuracy_g.append(sum(output.cpu().numpy()>0.5)/len(output.cpu().numpy()))
                 
-                
+                torch.set_grad_enabled(True)
                 
             if phase == 'train':
                 #scheduler.step()
