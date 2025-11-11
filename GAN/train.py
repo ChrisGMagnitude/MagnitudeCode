@@ -174,8 +174,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 #torch.set_grad_enabled(False)
                 
-                if log['trainging_mode']=='discriminator':
-                    continue
+                
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
                         model.train()  # Set model to training mode
