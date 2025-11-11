@@ -116,7 +116,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                         errD_real.backward()
-                #errD_real.backward()
+                
                 
                 ## Create all fake batch       
                 fake_segmentartion = model(inputs)['out'].detach()
@@ -141,7 +141,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                        errD_fake.backward()
-                #errD_fake.backward()
+                
                 
                 # Update D
                 #if phase == 'train':
@@ -215,10 +215,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 output = output.detach()
                 # backward + optimize only if in training phase
-                #if phase == 'train':
-                #    if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
-                #        errG.backward()
-                #        optimizerG.step()
+                if phase == 'train':
+                    if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
+                        errG.backward()
+                        optimizerG.step()
                 errG = errG.detach()
                 
                 
