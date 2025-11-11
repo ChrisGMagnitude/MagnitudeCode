@@ -195,8 +195,13 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 #continue
                 # forward
                 # track history if only in train
-                outputs = model(inputs)['out']#.detach()
-                seg_labels_out = nn.Sigmoid()(outputs)
+                
+                #outputs = model(inputs)['out']#.detach()
+                #seg_labels_out = nn.Sigmoid()(outputs)
+                
+                fake_segmentartion = model(inputs)['out']#.detach()
+                seg_labels_out = fake_segmentartion>0
+                
                 fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
                 
                 #continue
