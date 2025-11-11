@@ -18,6 +18,17 @@ from tempfile import TemporaryDirectory
 import tqdm
 from pynvml import *
 
+class my_round_func2(torch.autograd.Function):
+    def forward(ctx, i):
+        result = torch.round(i)
+        ctx.save_for_backward(result)
+        return result
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        grad_input = grad_output.clone()
+        return grad_input
+
 def train_model(model, netD, optimizerG, optimizerD, criterion,
                 device, dataloaders, log, num_epochs=25,
                 real_label = 1, fake_label = 0, label_smoothing = 0.1):
@@ -120,7 +131,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 ## Create all fake batch       
                 fake_segmentartion = model(inputs)['out'].detach()
-                seg_labels_out = fake_segmentartion>0
+                seg_labels_out = nn.Sigmoid()(fake_segmentartion)
+                seg_labels_out = my_round_func2.apply(seg_labels_out)
                 fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
                 
                 # Create fake label
@@ -196,11 +208,12 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # forward
                 # track history if only in train
                 
-                #outputs = model(inputs)['out']#.detach()
-                #seg_labels_out = nn.Sigmoid()(outputs)
+                outputs = model(inputs)['out']#.detach()
+                seg_labels_out = nn.Sigmoid()(outputs)
+                seg_labels_out = my_round_func2.apply(seg_labels_out)
                 
-                fake_segmentartion = model(inputs)['out']#.detach()
-                seg_labels_out = fake_segmentartion>0
+                #fake_segmentartion = model(inputs)['out']#.detach()
+                #seg_labels_out = fake_segmentartion>0
                 
                 fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
                 

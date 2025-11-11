@@ -28,14 +28,14 @@ epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 24#32
 num_workers = 8#40
-description = 'GAN-sigmoid-labelsmooth-dualTraining-d16'
+description = 'GAN-fancyRound-test'
 trainging_mode = 'all'#'all'#'generator'#'discriminator'
-#initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
-#initial_weights_file = 'last_model_params.pt'#'default'#
-initial_weights = r'/mnt/magbucket/segmentation/Models/GAN-sigmoid-labelsmooth-dualTraining-d16 - all - 2025-11-11 161337'#'default'#
-initial_weights_file = '0_epoch_model_params.pt'#'default'#
-initial_weights_d = r'/mnt/magbucket/segmentation/Models/GAN-sigmoid-labelsmooth-dualTraining-d16 - all - 2025-11-11 161337'#'default'#
-initial_weights_file_d = '0_epoch_netD_params.pt'
+initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
+initial_weights_file = 'last_model_params.pt'#'default'#
+#initial_weights = r'/mnt/magbucket/segmentation/Models/GAN-sigmoid-labelsmooth-dualTraining-d16 - all - 2025-11-11 161337'#'default'#
+#initial_weights_file = '0_epoch_model_params.pt'#'default'#
+initial_weights_d = 'default'#r'/mnt/magbucket/segmentation/Models/GAN-sigmoid-labelsmooth-dualTraining-d16 - all - 2025-11-11 161337'#'default'#
+initial_weights_file_d = ''#'0_epoch_netD_params.pt'
 lr_g = 0.0002
 lr_d = 0.0002
 momentum = 0.9
@@ -63,7 +63,7 @@ model_path = r'/mnt/magbucket/segmentation/Models'
 val_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=True,label_type=label_type,
                               crop_jitter=[0.2,0.4,1.6], max_white_noise=0.001,interp_id_lookup=interp_id_lookup)
 
-train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',augment=True,label_type=label_type,
+train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/valid.hdf5',augment=True,label_type=label_type,
                                crop_jitter=[0.2,0.4,1.6], max_white_noise=0.001,interp_id_lookup=interp_id_lookup)
 
 
