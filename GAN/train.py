@@ -213,7 +213,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # backward + optimize only if in training phase
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
-                        errG.backward()
+                        #errG.backward()
                         optimizerG.step()
                 errG = errG.detach()
                 
