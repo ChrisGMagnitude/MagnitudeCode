@@ -34,8 +34,8 @@ initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-
 initial_weights_file = 'last_model_params.pt'#'default'#
 initial_weights_d = 'default'#r'/mnt/magbucket/segmentation/Models/deeplabv3_resnet50-GAN - discriminator - 2025-11-05 170550'#'default'#
 initial_weights_file_d = ''
-lr_g = 0.000002
-lr_d = 0.000002
+lr_g = 0.00002
+lr_d = 0.00002
 momentum = 0.9
 step_size = 10
 gamma = 0.6 # 0.6
@@ -127,7 +127,7 @@ model = model.to(device)
 #GAN Discriminator
 
 nc = 6
-ndf = 64
+ndf = 8#64
 
 class Discriminator(nn.Module):
     def __init__(self):
