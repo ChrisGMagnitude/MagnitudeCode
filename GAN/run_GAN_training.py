@@ -28,7 +28,7 @@ epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 24#32
 num_workers = 8#40
-description = 'GAN-fancyRound'
+description = 'GAN-fancyRound-head'
 trainging_mode = 'all'#'all'#'generator'#'discriminator'
 initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
 initial_weights_file = 'last_model_params.pt'#'default'#
@@ -178,7 +178,8 @@ beta1 = 0.5
 
 # Setup Adam optimizers for both G and D
 optimizerD = optim.Adam(netD.parameters(), lr=lr_d, betas=(beta1, 0.999))
-optimizerG = optim.Adam(model.parameters(), lr=lr_g, betas=(beta1, 0.999))
+params = list(model.classifier.parameters()) + list(model.aux_classifier.parameters())
+optimizerG = optim.Adam(params, lr=lr_g, betas=(beta1, 0.999))
 
 
 model, log = train_model(model, netD, optimizerG, optimizerD, criterion,
