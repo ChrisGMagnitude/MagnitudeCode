@@ -77,12 +77,13 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 ###########################
                 # Segmentation model in eval mode when training netD
                 model.eval()
+                model.requires_grad = False
                 
                 # netD to training mode only for training loop, otherwise eval mode
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                         netD.train()  # Set model to training mode
-                        torch.set_grad_enabled(True)
+                        netD.requires_grad = True
                     else:
                         netD.eval()   # Set model to evaluate mode
                 else:
@@ -178,6 +179,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
                         model.train()  # Set model to training mode
+                        model.requires_grad = True
                     else:
                         model.eval()   # Set model to evaluate mode
                 else:
