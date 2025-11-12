@@ -75,7 +75,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             val_fake_accuracy_d = []
             val_fake_accuracy_g = []
             
-            first = True
+            firstD = True
+            firstG = True
             # Iterate over data.
             batch = -1
             for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
@@ -119,11 +120,12 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 output_r = output_r.detach()
                 
-                if first:
+                if firstD:
                     print('Real D')
                     print('label',label)
                     print('output_r',output_r)
                     print('errD_real',errD_real)
+                    
                     
                 # Calculate gradients for D in backward pass
                 if phase == 'train':
@@ -146,11 +148,12 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 errD_fake = -torch.mean(output_f)
                 output_f = output_f.detach()
                 
-                if first:
+                if firstD:
                     print('Fake D')
                     print('label',label)
                     print('output_f',output_f)
                     print('errD_fake',errD_fake)
+                    
                     
                 # Calculate the gradients for this batch, accumulated (summed) with previous gradients
                 if phase == 'train':
@@ -171,9 +174,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 errD_fake = errD_fake.detach()
                 errD = errD_real + errD_fake
                 
-                if first:
+                if firstD:
                     print('Combined D')
                     print('errD',errD)
+                    firstD=False
                 
                 # Update D
                 if phase == 'train':
@@ -219,12 +223,12 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     #errG = criterion(output, label)
                     errG = torch.mean(output)
                     
-                    if first:
+                    if firstG:
                         print('Fake G')
                         print('label',label)
                         print('output',output)
                         print('errG',errG)
-                        first = False
+                        firstG = False
 
                     output = output.detach()
                     # backward + optimize only if in training phase
