@@ -30,12 +30,12 @@ batch_size = 24#32
 num_workers = 8#40
 description = 'GAN-head-Wasserstien-Arch'
 trainging_mode = 'all'#'all'#'generator'#'discriminator'
-initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
-initial_weights_file = 'last_model_params.pt'#'default'#
-#initial_weights = r'/mnt/magbucket/segmentation/Models/GAN-sigmoid-labelsmooth-dualTraining-d16 - all - 2025-11-11 161337'#'default'#
-#initial_weights_file = '0_epoch_model_params.pt'#'default'#
-initial_weights_d = 'default'#r'/mnt/magbucket/segmentation/Models/GAN-sigmoid-labelsmooth-dualTraining-d16 - all - 2025-11-11 161337'#'default'#
-initial_weights_file_d = ''#'0_epoch_netD_params.pt'
+initial_weights = r'/mnt/magbucket/segmentation/Models/GAN-fancyRound-head-Wasserstien - all - 2025-11-12 111032'#'default'#
+initial_weights_file = '25_epoch_model_params.pt'#'default'#
+initial_weights_d = r'/mnt/magbucket/segmentation/Models/GAN-fancyRound-head-Wasserstien - all - 2025-11-12 111032'#'default'#
+initial_weights_file_d = '25_epoch_netD_params.pt'#'default'#
+#initial_weights_d = 'default'#r'/mnt/magbucket/segmentation/Models/GAN-sigmoid-labelsmooth-dualTraining-d16 - all - 2025-11-11 161337'#'default'#
+#initial_weights_file_d = ''#'0_epoch_netD_params.pt'
 lr_g = 0.0002
 lr_d = 0.0002
 momentum = 0.9
@@ -129,7 +129,7 @@ model = model.to(device)
 
 #GAN Discriminator
 
-nc = 4
+nc = 6
 ndf = 64
 
 class Discriminator(nn.Module):
