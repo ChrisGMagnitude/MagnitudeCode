@@ -122,7 +122,6 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 if firstD:
                     print('Real D')
-                    print('label',label)
                     print('output_r',output_r)
                     print('errD_real',errD_real)
                     
@@ -150,7 +149,6 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 if firstD:
                     print('Fake D')
-                    print('label',label)
                     print('output_f',output_f)
                     print('errD_fake',errD_fake)
                     
@@ -225,7 +223,6 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     
                     if firstG:
                         print('Fake G')
-                        print('label',label)
                         print('output',output)
                         print('errG',errG)
                         firstG = False
