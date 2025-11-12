@@ -125,7 +125,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 
                 ## Create all fake batch       
-                fake_segmentartion = model(inputs)['out'].detach()
+                fake_segmentartion = model(inputs)['out'].detach()[:,0,:,:].unsqueeze(1)
                 seg_labels_out = nn.Sigmoid()(fake_segmentartion)
                 seg_labels_out = my_round_func2.apply(seg_labels_out)
                 fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
@@ -205,7 +205,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     # forward
                     # track history if only in train
 
-                    outputs = model(inputs)['out']
+                    outputs = model(inputs)['out'][:,0,:,:].unsqueeze(1)
                     seg_labels_out = nn.Sigmoid()(outputs)
                     seg_labels_out = my_round_func2.apply(seg_labels_out)
                     fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
