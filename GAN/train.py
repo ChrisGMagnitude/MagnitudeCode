@@ -31,7 +31,8 @@ class my_round_func2(torch.autograd.Function):
 
 def train_model(model, netD, optimizerG, optimizerD, criterion,
                 device, dataloaders, log, num_epochs=25,
-                real_label = 1, fake_label = 0, label_smoothing = 0.1):
+                real_label = 1, fake_label = 0, label_smoothing = 0.1, 
+                clip_value = 0.01, n_critic = 5, l1_lambda = 100):
     
 
     # Create a temporary directory to save training checkpoints
@@ -47,6 +48,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
     val_fake_accuracy_d_epoch = []
     val_fake_accuracy_g_epoch = []
     
+    l1 = nn.L1Loss()
     
     for epoch in range(num_epochs):
         print(f'Epoch {epoch}/{num_epochs - 1}')
@@ -75,8 +77,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             
             first = True
             # Iterate over data.
+            batch = -1
             for inputs, labels in tqdm.tqdm(dataloaders[phase],ascii=True):
-                
+                batch+=1
                 # Format data and labels and move to GPU
                 labels = labels.type(torch.float)
                 inputs = inputs.to(device)
@@ -99,7 +102,6 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                         netD.eval()   # Set model to evaluate mode
                 else:
                     netD.eval()   # Set model to evaluate mode
-                #netD.train()
                 
                 ## Train with all-real batch
                 netD.zero_grad()
@@ -111,10 +113,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Forward pass real batch through D
                 output_r = netD(combined).view(-1)
                 
-                
-                
                 # Calculate loss on all-real batch
-                errD_real = criterion(output_r, label)
+                #errD_real = criterion(output_r, label)
+                errD_real = output_r.mean().item()
+                
                 output_r = output_r.detach()
                 
                 if first:
@@ -140,7 +142,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Classify all fake batch with D
                 output_f = netD(fake_combined.detach()).view(-1)
                 # Calculate D's loss on the all-fake batch
-                errD_fake = criterion(output_f, label)
+                #errD_fake = criterion(output_f, label)
+                errD_fake = -torch.mean(output_f)
                 output_f = output_f.detach()
                 
                 if first:
@@ -155,10 +158,13 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                        errD_fake.backward()
                 
                 
-                # Update D
-                #if phase == 'train':
-                #    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                optimizerD.step()
+                if phase == 'train':
+                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
+                        optimizerD.step()
+                
+                for p in netD.parameters():
+                    p.data.clamp_(-clip_value, clip_value)    
+                    
                     
                 # Compute error of D as sum over the fake and the real batches
                 errD_real = errD_real.detach()
@@ -178,75 +184,65 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     val_loss_d.append(errD.cpu())
                     val_real_accuracy_d.append(sum(output_r.cpu().numpy()>0.5)/len(output_r.cpu().numpy()))
                     val_fake_accuracy_d.append(sum(output_f.cpu().numpy()<0.5)/len(output_f.cpu().numpy()))
-                #continue
+
                 
                 #############################
                 ## (2) Update G network: maximize log(D(G(z)))
                 ############################
                 
-                #torch.set_grad_enabled(False)
-                
-                
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
-                        model.train()  # Set model to training mode
-                        model.requires_grad = True
+                if (batch + 1) % n_critic == 0:
+                    if phase == 'train':
+                        if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
+                            model.train()  # Set model to training mode
+                            model.requires_grad = True
+                        else:
+                            model.eval()   # Set model to evaluate mode
                     else:
-                        model.eval()   # Set model to evaluate mode
-                else:
-                    model.eval()
-                netD.eval() 
-                netD.requires_grad = False
-                
-                
-                # zero the parameter gradients
-                optimizerG.zero_grad()
-                model.zero_grad()
-                label.fill_(real_label)
-                
-                #continue
-                # forward
-                # track history if only in train
-                
-                outputs = model(inputs)['out']#.detach()
-                seg_labels_out = nn.Sigmoid()(outputs)
-                seg_labels_out = my_round_func2.apply(seg_labels_out)
-                
-                #fake_segmentartion = model(inputs)['out']#.detach()
-                #seg_labels_out = fake_segmentartion>0
-                
-                fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
-                
-                #continue
-                output = netD(fake_combined).view(-1)
-                
-                errG = criterion(output, label)
-                
-                
-                if first:
-                    print('Fake G')
-                    print('label',label)
-                    print('output',output)
-                    print('errG',errG)
-                    first = False
-                
-                output = output.detach()
-                # backward + optimize only if in training phase
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
-                        errG.backward()
-                        optimizerG.step()
-                errG = errG.detach()
-                
-                
-                if phase == 'train':
-                    train_loss_g.append(errG.detach().cpu())
-                    train_fake_accuracy_g.append(sum(output.cpu().numpy()>0.5)/len(output.cpu().numpy()))
-                else:
-                    val_loss_g.append(errG.detach().cpu())
-                    val_fake_accuracy_g.append(sum(output.cpu().numpy()>0.5)/len(output.cpu().numpy()))
-                
-                #torch.set_grad_enabled(True)
+                        model.eval()
+                    netD.eval() 
+                    netD.requires_grad = False
+
+
+                    # zero the parameter gradients
+                    optimizerG.zero_grad()
+                    model.zero_grad()
+                    label.fill_(real_label)
+
+                    # forward
+                    # track history if only in train
+
+                    outputs = model(inputs)['out']#.detach()
+                    seg_labels_out = nn.Sigmoid()(outputs)
+                    seg_labels_out = my_round_func2.apply(seg_labels_out)
+                    fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
+                    output = netD(fake_combined).view(-1)
+                    #errG = criterion(output, label)
+                    errG = torch.mean(output)
+                    
+                    if first:
+                        print('Fake G')
+                        print('label',label)
+                        print('output',output)
+                        print('errG',errG)
+                        first = False
+
+                    output = output.detach()
+                    # backward + optimize only if in training phase
+                    if phase == 'train':
+                        if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
+                            errG.backward()
+                            optimizerG.step()
+                    errG = errG.detach()
+
+
+                    if phase == 'train':
+                        train_loss_g.append(errG.detach().cpu())
+                        train_fake_accuracy_g.append(sum(output.cpu().numpy()>0.5)/len(output.cpu().numpy()))
+                    else:
+                        val_loss_g.append(errG.detach().cpu())
+                        val_fake_accuracy_g.append(sum(output.cpu().numpy()>0.5)/len(output.cpu().numpy()))
+
+
                 
             if phase == 'train':
                 #scheduler.step()
