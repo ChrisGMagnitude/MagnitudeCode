@@ -115,7 +115,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
                 # Calculate loss on all-real batch
                 #errD_real = criterion(output_r, label)
-                errD_real = output_r.mean().item()
+                errD_real = output_r.mean()
                 
                 output_r = output_r.detach()
                 
