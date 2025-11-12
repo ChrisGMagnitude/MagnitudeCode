@@ -172,12 +172,12 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Update D
                 if phase == 'train':
                     train_loss_d.append(errD.cpu())
-                    train_real_accuracy_d.append(sum(output_r.cpu().numpy()>0)/len(output_r.cpu().numpy()))
-                    train_fake_accuracy_d.append(sum(output_f.cpu().numpy()<0)/len(output_f.cpu().numpy()))
+                    train_real_accuracy_d.append(sum(output_r.cpu().numpy()<0)/len(output_r.cpu().numpy()))
+                    train_fake_accuracy_d.append(sum(output_f.cpu().numpy()>0)/len(output_f.cpu().numpy()))
                 else:
                     val_loss_d.append(errD.cpu())
-                    val_real_accuracy_d.append(sum(output_r.cpu().numpy()>0)/len(output_r.cpu().numpy()))
-                    val_fake_accuracy_d.append(sum(output_f.cpu().numpy()<0)/len(output_f.cpu().numpy()))
+                    val_real_accuracy_d.append(sum(output_r.cpu().numpy()<0)/len(output_r.cpu().numpy()))
+                    val_fake_accuracy_d.append(sum(output_f.cpu().numpy()>0)/len(output_f.cpu().numpy()))
 
                 
                 #############################
@@ -230,10 +230,10 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
 
                     if phase == 'train':
                         train_loss_g.append(errG.detach().cpu())
-                        train_fake_accuracy_g.append(sum(output.cpu().numpy()>0)/len(output.cpu().numpy()))
+                        train_fake_accuracy_g.append(sum(output.cpu().numpy()<0)/len(output.cpu().numpy()))
                     else:
                         val_loss_g.append(errG.detach().cpu())
-                        val_fake_accuracy_g.append(sum(output.cpu().numpy()>0)/len(output.cpu().numpy()))
+                        val_fake_accuracy_g.append(sum(output.cpu().numpy()<0)/len(output.cpu().numpy()))
 
 
                 
