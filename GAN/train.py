@@ -281,6 +281,8 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
             log2['val_loss_g'] = val_loss_g_epoch
             log2['train_loss_d'] = train_loss_d_epoch
             log2['val_loss_d'] = val_loss_d_epoch
+            log2['train_real_accuracy_g_epoch'] = train_real_accuracy_g_epoch
+            log2['train_fake_accuracy_g_epoch'] = train_fake_accuracy_g_epoch
             log2['train_real_accuracy_d_epoch'] = train_real_accuracy_d_epoch
             log2['train_fake_accuracy_d_epoch'] = train_fake_accuracy_d_epoch
             log2['val_real_accuracy_d_epoch'] = val_real_accuracy_d_epoch
