@@ -154,7 +154,7 @@ class Discriminator(nn.Module):
             nn.Conv2d(ndf * 8, 1, 4, 1, 0, bias=False),
             nn.Flatten(),
             nn.Linear(23*23, 1),
-            nn.Sigmoid()
+            #nn.Sigmoid()
         )
 
     def forward(self, input):
