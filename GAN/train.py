@@ -8,6 +8,7 @@ import torchvision
 from torchvision import datasets, models, transforms
 import torchmetrics
 from torchmetrics.segmentation import MeanIoU
+from torch import autograd
 import matplotlib.pyplot as plt
 import time
 from datetime import datetime
@@ -29,6 +30,26 @@ class my_round_func2(torch.autograd.Function):
     def backward(ctx, grad_output):
         grad_input = grad_output.clone()
         return grad_input
+    
+def compute_gp(netD, real_data, fake_data):
+    batch_size = real_data.size(0)
+    eps = torch.rand(batch_size, 1, 1, 1).to(real_data.device)
+    eps = eps.expand_as(real_data)
+    interpolation = eps * real_data + (1 - eps) * fake_data
+    interp_logits = netD(interpolation)
+    grad_outputs = torch.ones_like(interp_logits)
+    gradients = autograd.grad(
+        outputs=interp_logits,
+        inputs=interpolation,
+        grad_outputs=grad_outputs,
+        create_graph=True,
+        retain_graph=True,
+    )[0]
+    gradients = gradients.view(batch_size, -1)
+    grad_norm = gradients.norm(2, 1)
+    return torch.mean((grad_norm - 1) ** 2)
+
+
 
 def train_model(model, netD, optimizerG, optimizerD, criterion,
                 device, dataloaders, log, num_epochs=25,
@@ -128,9 +149,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     
                     
                 # Calculate gradients for D in backward pass
-                if phase == 'train':
-                    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                        errD_real.backward()
+                
                 
                 
                 ## Create all fake batch       
@@ -152,26 +171,32 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     print('Fake D')
                     print('output_f',output_f)
                     print('errD_fake',errD_fake)
+                
+                gradient_penalty = compute_gp(netD, combined, fake_combined) 
+                errD = errD_real + errD_fake + 10*gradient_penalty
                     
-                    
-                # Calculate the gradients for this batch, accumulated (summed) with previous gradients
+                #if phase == 'train':
+                #    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
+                #        errD_real.backward()
+                #            
+                ## Calculate the gradients for this batch, accumulated (summed) with previous gradients
+                #if phase == 'train':
+                #    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
+                #       errD_fake.backward()
+                
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
-                       errD_fake.backward()
-                
+                       errD.backward()
                 
                 if phase == 'train':
                     if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
                         optimizerD.step()
                 
-                for p in netD.parameters():
-                    p.data.clamp_(-clip_value, clip_value)    
-                    
-                    
-                # Compute error of D as sum over the fake and the real batches
-                errD_real = errD_real.detach()
-                errD_fake = errD_fake.detach()
-                errD = errD_real + errD_fake
+                #for p in netD.parameters():
+                #    p.data.clamp_(-clip_value, clip_value)    
+
+
+                errD = errD.detach()
                 
                 if firstD:
                     print('Combined D')
