@@ -178,6 +178,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     print('errD',errD)
                     firstD=False
                 
+                
                 # Update D
                 if phase == 'train':
                     train_loss_d.append(errD.cpu())
