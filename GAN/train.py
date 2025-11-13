@@ -18,7 +18,7 @@ from PIL import Image
 from tempfile import TemporaryDirectory
 import tqdm
 from pynvml import *
-#Working2
+#Working2gp
 
 class my_round_func2(torch.autograd.Function):
     def forward(ctx, i):
@@ -146,11 +146,6 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     print('Real D')
                     print('output_r',output_r)
                     print('errD_real',errD_real)
-                    
-                    
-                # Calculate gradients for D in backward pass
-                
-                
                 
                 ## Create all fake batch       
                 fake_segmentartion = model(inputs)['out'].detach()
@@ -161,7 +156,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 # Create fake label
                 label.fill_(fake_label)
                 # Classify all fake batch with D
-                output_f = netD(fake_combined.detach()).view(-1)
+                output_f = netD(fake_combined).view(-1)
                 # Calculate D's loss on the all-fake batch
                 #errD_fake = criterion(output_f, label)
                 errD_fake = -torch.mean(output_f)
