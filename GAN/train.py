@@ -17,7 +17,7 @@ from PIL import Image
 from tempfile import TemporaryDirectory
 import tqdm
 from pynvml import *
-#Working
+#Working2
 
 class my_round_func2(torch.autograd.Function):
     def forward(ctx, i):
@@ -193,7 +193,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 ## (2) Update G network: maximize log(D(G(z)))
                 ############################
                 
-                if (batch + 1) % n_critic == 0:
+                if (batch + 1) % n_critic == 0 and epoch!=0:
                     if phase == 'train':
                         if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
                             model.train()  # Set model to training mode
