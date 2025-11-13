@@ -19,7 +19,7 @@ import tqdm
 from dataLoader import MagClassDataset, get_weighted_data_loader
 from train import train_model
 from pynvml import *
-#Working
+#Working2
 
 current_time = datetime.now()
 architecture = 'FCN_resnet50'
