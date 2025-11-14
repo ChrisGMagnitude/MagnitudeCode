@@ -167,6 +167,9 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     print('output_f',output_f)
                     print('errD_fake',errD_fake)
                 
+                combined.requires_grad_()
+                fake_combined.requires_grad_()
+                
                 print('combined.requires_grad', combined.requires_grad)
                 print('fake_combined.requires_grad', fake_combined.requires_grad)
                 gradient_penalty = compute_gp(netD, combined, fake_combined) 
