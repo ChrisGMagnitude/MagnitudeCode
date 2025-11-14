@@ -54,7 +54,7 @@ def compute_gp(netD, real_data, fake_data):
 def train_model(model, netD, optimizerG, optimizerD, criterion,
                 device, dataloaders, log, num_epochs=25,
                 real_label = 1, fake_label = 0, label_smoothing = 0.1, 
-                clip_value = 0.01, n_critic = 5, l1_lambda = 100):
+                clip_value = 0.01, n_critic = 5, l1_lambda = 100, mag_scale = 0.2):
     
 
     # Create a temporary directory to save training checkpoints
@@ -107,7 +107,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 labels = labels.type(torch.float)
                 inputs = inputs.to(device)
                 labels = labels.to(device)
-                combined = torch.cat((inputs, labels), dim=1).to(device)
+                combined = torch.cat((inputs*mag_scale, labels), dim=1).to(device)
                 
                 ############################
                 # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
@@ -151,7 +151,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 fake_segmentartion = model(inputs)['out'].detach()
                 seg_labels_out = nn.Sigmoid()(fake_segmentartion)
                 seg_labels_out = my_round_func2.apply(seg_labels_out)
-                fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
+                fake_combined = torch.cat((inputs*mag_scale, seg_labels_out), dim=1)
                 
                 # Create fake label
                 label.fill_(fake_label)
@@ -240,7 +240,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     outputs = model(inputs)['out']#.detach()
                     seg_labels_out = nn.Sigmoid()(outputs)
                     seg_labels_out = my_round_func2.apply(seg_labels_out)
-                    fake_combined = torch.cat((inputs, seg_labels_out), dim=1)
+                    fake_combined = torch.cat((inputs*mag_scale, seg_labels_out), dim=1)
                     output = netD(fake_combined).view(-1)
                     #errG = criterion(output, label)
                     errG = torch.mean(output)
