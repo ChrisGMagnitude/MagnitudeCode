@@ -29,12 +29,12 @@ epoch_size_train = 20*124*10#7680
 epoch_size_val = 20*32*5#1280
 batch_size = 24#32
 num_workers = 8#40
-description = 'GAN-Wasserstien-gp-Working2-noBN'
+description = 'GAN-Wasserstien-gp-Working2-noBN-fullDepth'
 trainging_mode = 'all'#'all'#'generator'#'discriminator'
-initial_weights = r'/mnt/magbucket/segmentation/Models/balanced - all - 2025-07-01 195347'#'default'#
-initial_weights_file = 'last_model_params.pt'#'25_epoch_model_params.pt'#'default'#
-initial_weights_d = 'default'#r'/mnt/magbucket/segmentation/Models/GAN-fancyRound-head-Wasserstien-Working-Reboot - all - 2025-11-13 100007'#'default'#
-initial_weights_file_d = ''#'25_epoch_netD_params.pt'
+initial_weights = '/mnt/magbucket/segmentation/Models/GAN-Wasserstien-gp-Working2-noBN - all - 2025-11-14 162303'#'default'#
+initial_weights_file = '55_epoch_model_params.pt'#'last_model_params.pt'#'25_epoch_model_params.pt'#'default'#
+initial_weights_d = '/mnt/magbucket/segmentation/Models/GAN-Wasserstien-gp-Working2-noBN - all - 2025-11-14 162303'#r'/mnt/magbucket/segmentation/Models/GAN-fancyRound-head-Wasserstien-Working-Reboot - all - 2025-11-13 100007'#'default'#
+initial_weights_file_d = '55_epoch_netD_params.pt'
 lr_g = 0.0002
 lr_d = 0.0002
 momentum = 0.9
@@ -68,9 +68,6 @@ train_dataset = MagClassDataset(r'/mnt/magbucket/segmentation/train.hdf5',augmen
 
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)  
 val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, pin_memory=True,num_workers=num_workers,shuffle=True)
-
-#train_loader = get_weighted_data_loader(train_dataset,epoch_size_train,batch_size,num_workers=num_workers)
-#val_loader = get_weighted_data_loader(val_dataset,epoch_size_val,batch_size,num_workers=num_workers)
 
 
 dataloaders = {}
@@ -176,9 +173,9 @@ beta1 = 0.5
 
 # Setup Adam optimizers for both G and D
 optimizerD = optim.Adam(netD.parameters(), lr=lr_d, betas=(beta1, 0.999))
-params = list(model.classifier.parameters()) + list(model.aux_classifier.parameters())
-optimizerG = optim.Adam(params, lr=lr_g, betas=(beta1, 0.999))
-
+#params = list(model.classifier.parameters()) + list(model.aux_classifier.parameters())
+#optimizerG = optim.Adam(params, lr=lr_g, betas=(beta1, 0.999))
+optimizerG = optim.Adam(model.parameters(), lr=lr_g, betas=(beta1, 0.999))
 
 model, log = train_model(model, netD, optimizerG, optimizerD, criterion,
                         device, dataloaders, log, num_epochs=num_epochs)
