@@ -294,7 +294,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 
             
         
-        if epoch%5 == 0:
+        if epoch%2 == 0:
             torch.save(model.state_dict(), os.path.join(log['model_path'],log['name'],str(epoch)+'_epoch_model_params.pt'))
             torch.save(netD.state_dict(), os.path.join(log['model_path'],log['name'],str(epoch)+'_epoch_netD_params.pt'))
             log2 = log.copy()
