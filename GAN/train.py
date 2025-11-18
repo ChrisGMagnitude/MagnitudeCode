@@ -54,7 +54,7 @@ def compute_gp(netD, real_data, fake_data):
 def train_model(model, netD, optimizerG, optimizerD, criterion,
                 device, dataloaders, log, num_epochs=25,
                 real_label = 1, fake_label = 0, label_smoothing = 0.1, 
-                clip_value = 0.01, n_critic = 5, l1_lambda = 100, mag_scale = 0.2):
+                clip_value = 0.01, n_critic = 50, l1_lambda = 100, mag_scale = 0.2):
     
 
     # Create a temporary directory to save training checkpoints
@@ -216,7 +216,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 ## (2) Update G network: maximize log(D(G(z)))
                 ############################
                 
-                if (batch + 1) % n_critic == 0:# and epoch>4:
+                if (batch + 1) % n_critic == 0 and epoch>4:
                     if phase == 'train':
                         if log['trainging_mode']=='all' or log['trainging_mode']=='generator':
                             model.train()  # Set model to training mode
