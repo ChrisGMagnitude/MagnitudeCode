@@ -171,7 +171,7 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                 fake_combined.requires_grad_()
                 
                 gradient_penalty = compute_gp(netD, combined, fake_combined) 
-                errD = errD_real + errD_fake + 10*gradient_penalty
+                errD = errD_real + errD_fake + 2*gradient_penalty #10*gradient_penalty
                     
                 #if phase == 'train':
                 #    if log['trainging_mode']=='all' or log['trainging_mode']=='discriminator':
@@ -245,11 +245,11 @@ def train_model(model, netD, optimizerG, optimizerD, criterion,
                     #errG = criterion(output, label)
                     errG = torch.mean(output)
                     
-                    if firstG:
-                        print('Fake G')
-                        print('output',output)
-                        print('errG',errG)
-                        firstG = False
+                    #if firstG:
+                    #    print('Fake G')
+                    #    print('output',output)
+                    #    print('errG',errG)
+                    #    firstG = False
 
                     output = output.detach()
                     # backward + optimize only if in training phase
