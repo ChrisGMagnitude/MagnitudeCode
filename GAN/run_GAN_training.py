@@ -35,7 +35,7 @@ initial_weights = r'/mnt/magbucket/segmentation/Models/GAN-Wasserstien-gp-Workin
 initial_weights_file = '55_epoch_model_params.pt'#'default'#
 initial_weights_d = r'/mnt/magbucket/segmentation/Models/GAN-Wasserstien-gp-Working2-noBN - all - 2025-11-14 162303'#'default'#
 initial_weights_file_d = '55_epoch_netD_params.pt'
-lr_g = 0.00002
+lr_g = 0.000002
 lr_d = 0.00002
 momentum = 0.9
 step_size = 10
@@ -176,8 +176,11 @@ beta1 = 0.5
 
 # Setup Adam optimizers for both G and D
 optimizerD = optim.Adam(netD.parameters(), lr=lr_d, betas=(beta1, 0.999))
-params = list(model.classifier.parameters()) + list(model.aux_classifier.parameters())
-optimizerG = optim.Adam(params, lr=lr_g, betas=(beta1, 0.999))
+#params = list(model.classifier.parameters()) + list(model.aux_classifier.parameters())
+optimizerG = optim.Adam([{'params':model.backbone.parameters(), 'lr':lr_g/100},
+                         {'params':model.classifier.parameters()},
+                         {'params':model.aux_classifier.parameters()}
+                         ], lr=lr_g, betas=(beta1, 0.999))
 
 
 model, log = train_model(model, netD, optimizerG, optimizerD, criterion,
