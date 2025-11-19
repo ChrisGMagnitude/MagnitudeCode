@@ -177,7 +177,7 @@ beta1 = 0.5
 # Setup Adam optimizers for both G and D
 optimizerD = optim.Adam(netD.parameters(), lr=lr_d, betas=(beta1, 0.999))
 #params = list(model.classifier.parameters()) + list(model.aux_classifier.parameters())
-optimizerG = optim.Adam([{'params':model.backbone.parameters(), 'lr':lr_g/100},
+optimizerG = optim.Adam([{'params':model.backbone.parameters(), 'lr':lr_g/10},
                          {'params':model.classifier.parameters()},
                          {'params':model.aux_classifier.parameters()}
                          ], lr=lr_g, betas=(beta1, 0.999))
